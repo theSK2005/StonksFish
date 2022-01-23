@@ -1,2 +1,2 @@
 # StonksFish
-Chess Robot for WW Robotics Team
+Chess Robot for WW Robotics Class

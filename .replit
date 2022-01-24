@@ -1,0 +1,2 @@
+language = "java17"
+run = "javac *.java && java Main"

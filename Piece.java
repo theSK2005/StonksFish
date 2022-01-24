@@ -8,6 +8,10 @@ class Piece {
         this.type = type;
     }
 
+    
+    public static void main(String[] args) {
+    }
+    
     public int getHeight () {
         return height;
     }

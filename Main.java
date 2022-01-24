@@ -100,11 +100,16 @@ class Main {
     }
 
     public static ArrayList<Integer> canMove (String curLine) {
+        ArrayList<Integer> moveFrom = new ArrayList<Integer>();
+        char piece = curLine.charAt(0);
+        String endPos = curLine.substring(2, 4);
+        char curTurn = curLine.charAt(5);
+        int endArr = posToArr(endPos);
         if (curLine.substring(0, 3) == "0-0") {
             if (curLine.charAt(4) == 'W') {
                 
             }
-            else f (curLine.charAt(4) == 'B') {
+            else if (curLine.charAt(4) == 'B') {
                 
             }
         }
@@ -116,11 +121,6 @@ class Main {
                 
             }
         }
-        ArrayList<Integer> moveFrom = new ArrayList<Integer>();
-        char piece = curLine.charAt(0);
-        String endPos = curLine.substring(2, 4);
-        char curTurn = curLine.charAt(5);
-        int endArr = posToArr(endPos);
         else if (board[endArr / 10][endArr % 10].getColor() != curTurn) {
             if (piece == 'P') {
                 if (board[endArr / 10][endArr % 10].getColor() == 'E') {
@@ -245,7 +245,6 @@ class Main {
 
             else if (piece == 'B') {
                     for (int x = 1; (x < 8 - (endArr / 10)) && (x < 8 - (endArr % 10)); x++) {
-                        System.out.println(arrToPos(endArr + (x * 11)));
                         if (board[(endArr / 10) + x][(endArr % 10) + x].getType() != 'E'
                             && (board[(endArr / 10) + x][(endArr % 10) + x].getType() != 'B'
                             || board[(endArr / 10) + x][(endArr % 10) + x].getColor() != curTurn)) {
@@ -257,7 +256,6 @@ class Main {
                         }
                     }
                     for (int x = 1; (x <= endArr / 10) && (x <= endArr % 10); x++) {
-                        System.out.println(arrToPos(endArr - (x * 11)));
                         if (board[(endArr / 10) - x][(endArr % 10) - x].getType() != 'E'
                             && (board[(endArr / 10) - x][(endArr % 10) - x].getType() != 'B'
                             || board[(endArr / 10) - x][(endArr % 10) - x].getColor() != curTurn)) {
@@ -269,7 +267,6 @@ class Main {
                         }
                     }
                     for (int x = 1; (x < 8 - (endArr / 10)) && (x <= endArr % 10); x++) {
-                        System.out.println(arrToPos(endArr + (x * 9)));
                         if (board[(endArr / 10) + x][(endArr % 10) - x].getType() != 'E'
                             && (board[(endArr / 10) + x][(endArr % 10) - x].getType() != 'B'
                             || board[(endArr / 10) + x][(endArr % 10) - x].getColor() != curTurn)) {
@@ -281,7 +278,6 @@ class Main {
                         }
                     }
                     for (int x = 1; (x <= endArr / 10) && (x < 8 - (endArr % 10)); x++) {
-                        System.out.println(arrToPos(endArr - (x * 9)));
                         if (board[(endArr / 10) - x][(endArr % 10) + x].getType() != 'E'
                             && (board[(endArr / 10) - x][(endArr % 10) + x].getType() != 'B'
                             || board[(endArr / 10) - x][(endArr % 10) + x].getColor() != curTurn)) {
@@ -487,6 +483,7 @@ class Main {
         if (moveNum % 2 == 0) {
 
         }
+        return true;
     }
     public static String notationParse (String curLine) {
         Matcher matcher;

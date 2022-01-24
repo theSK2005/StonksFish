@@ -349,7 +349,6 @@ class Main {
 
             else if (piece == 'Q') {
                     for (int x = 1; (x < 8 - (endArr / 10)) && (x < 8 - (endArr % 10)); x++) {
-                        System.out.println(arrToPos(endArr + (x * 11)));
                         if (board[(endArr / 10) + x][(endArr % 10) + x].getType() != 'E'
                             && (board[(endArr / 10) + x][(endArr % 10) + x].getType() != 'Q'
                             || board[(endArr / 10) + x][(endArr % 10) + x].getColor() != curTurn)) {
@@ -361,7 +360,6 @@ class Main {
                         }
                     }
                     for (int x = 1; (x <= endArr / 10) && (x <= endArr % 10); x++) {
-                        System.out.println(arrToPos(endArr - (x * 11)));
                         if (board[(endArr / 10) - x][(endArr % 10) - x].getType() != 'E'
                             && (board[(endArr / 10) - x][(endArr % 10) - x].getType() != 'Q'
                             || board[(endArr / 10) - x][(endArr % 10) - x].getColor() != curTurn)) {
@@ -373,7 +371,6 @@ class Main {
                         }
                     }
                     for (int x = 1; (x < 8 - (endArr / 10)) && (x <= endArr % 10); x++) {
-                        System.out.println(arrToPos(endArr + (x * 9)));
                         if (board[(endArr / 10) + x][(endArr % 10) - x].getType() != 'E'
                             && (board[(endArr / 10) + x][(endArr % 10) - x].getType() != 'Q'
                             || board[(endArr / 10) + x][(endArr % 10) - x].getColor() != curTurn)) {
@@ -385,7 +382,6 @@ class Main {
                         }
                     }
                     for (int x = 1; (x <= endArr / 10) && (x < 8 - (endArr % 10)); x++) {
-                        System.out.println(arrToPos(endArr - (x * 9)));
                         if (board[(endArr / 10) - x][(endArr % 10) + x].getType() != 'E'
                             && (board[(endArr / 10) - x][(endArr % 10) + x].getType() != 'Q'
                             || board[(endArr / 10) - x][(endArr % 10) + x].getColor() != curTurn)) {
@@ -492,7 +488,7 @@ class Main {
                 for (int y = 0; y < 8; y++) {
                     if (board[x][y].getColor() == 'W' && board[x][y].getType() == 'K') {
                         kPos = arrToPos((x * 10) + y);
-                        System.out.println(kPos);
+                        System.out.println("K  on " + kPos);
                     }
                 }
             }
@@ -511,7 +507,7 @@ class Main {
                 for (int y = 0; y < 8; y++) {
                     if (board[x][y].getColor() == 'B' && board[x][y].getType() == 'K') {
                         kPos = arrToPos((x * 10) + y);
-                        System.out.println(kPos);
+                        System.out.println("K on " + kPos);
                     }
                 }
             }

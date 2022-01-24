@@ -486,25 +486,6 @@ class Main {
         if (moveNum % 2 == 0) {
             for (int x = 0; x < 8; x++) {
                 for (int y = 0; y < 8; y++) {
-                    if (board[x][y].getColor() == 'W' && board[x][y].getType() == 'K') {
-                        kPos = arrToPos((x * 10) + y);
-                        System.out.println("K  on " + kPos);
-                    }
-                }
-            }
-            if (((canMove(("P " + kPos + " B")).size() != 0
-                || canMove(("N " + kPos + " B")).size() != 0)
-                || (canMove(("B " + kPos + " B")).size() != 0
-                || canMove(("R " + kPos + " B")).size() != 0))
-                || (canMove(("Q " + kPos + " B")).size() != 0)
-                || canMove(("K " + kPos + " B")).size() != 0) {
-                System.out.println("Illegal Position");
-                return false;
-            }
-        }
-        else {
-            for (int x = 0; x < 8; x++) {
-                for (int y = 0; y < 8; y++) {
                     if (board[x][y].getColor() == 'B' && board[x][y].getType() == 'K') {
                         kPos = arrToPos((x * 10) + y);
                         System.out.println("K on " + kPos);
@@ -517,7 +498,26 @@ class Main {
                 || canMove(("R " + kPos + " W")).size() != 0))
                 || (canMove(("Q " + kPos + " W")).size() != 0)
                 || canMove(("K " + kPos + " W")).size() != 0) {
-                System.out.println("Illegal Position");
+//                System.out.println("Illegal Position");
+                return false;
+            }
+        }
+        else {
+            for (int x = 0; x < 8; x++) {
+                for (int y = 0; y < 8; y++) {
+                    if (board[x][y].getColor() == 'W' && board[x][y].getType() == 'K') {
+                        kPos = arrToPos((x * 10) + y);
+                        System.out.println("K  on " + kPos);
+                    }
+                }
+            }
+            if (((canMove(("P " + kPos + " B")).size() != 0
+                || canMove(("N " + kPos + " B")).size() != 0)
+                || (canMove(("B " + kPos + " B")).size() != 0
+                || canMove(("R " + kPos + " B")).size() != 0))
+                || (canMove(("Q " + kPos + " B")).size() != 0)
+                || canMove(("K " + kPos + " B")).size() != 0) {
+//                System.out.println("Illegal Position");
                 return false;
             }
         }

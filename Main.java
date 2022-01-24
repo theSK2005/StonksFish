@@ -52,6 +52,7 @@ class Main {
         board[6][6] = new Piece(2, 'B', 'P');
         board[6][7] = new Piece(2, 'B', 'P');
         printBoard();
+        legalPos();
         String parsedLine;
         Scanner scan = new Scanner(System.in);
         System.out.println("W to Move\nPrint Chess Move");
@@ -61,6 +62,7 @@ class Main {
             parsedLine = notationParse(move);
             doMove(canMove(parsedLine), parsedLine);
             printBoard();
+            legalPos();
             if (moveNum % 2 == 0) {
                 System.out.println("W to Move\nPrint Chess Move");
             }
@@ -113,7 +115,7 @@ class Main {
                 
             }
         }
-        else if (curLine == "0-0-0") {
+        else if (curLine.substring(0, 5) == "0-0-0") {
             if (curLine.charAt(6) == 'W') {
                 
             }
@@ -157,27 +159,31 @@ class Main {
                 }
                 else {
                     if (endArr % 10 != 0) {
-                        if ((board[(endArr / 10) - 1] [(endArr % 10) - 1].getType() == 'P'
-                        && board[(endArr / 10) - 1] [(endArr % 10) - 1].getColor() == 'W')
-                        && curTurn == 'W') {
-                            moveFrom.add(endArr - 11);
+                        if (curTurn == 'W') {
+                            if (board[(endArr / 10) - 1] [(endArr % 10) - 1].getType() == 'P'
+                            && board[(endArr / 10) - 1] [(endArr % 10) - 1].getColor() == 'W') {
+                                moveFrom.add(endArr - 11);
+                            }
                         }
-                        if ((board[(endArr / 10) + 1] [(endArr % 10) - 1].getType() == 'P'
-                        && board[(endArr / 10) + 1] [(endArr % 10) - 1].getColor() == 'B')
-                        && curTurn == 'B') {
-                            moveFrom.add(endArr + 9);
+                        if (curTurn == 'B') {
+                            if(board[(endArr / 10) + 1] [(endArr % 10) - 1].getType() == 'P'
+                            && board[(endArr / 10) + 1] [(endArr % 10) - 1].getColor() == 'B') {
+                                moveFrom.add(endArr + 9);
+                            }
                         }    
                     }
                     if (endArr % 10 != 7) {
-                        if ((board[(endArr / 10) - 1] [(endArr % 10) + 1].getType() == 'P'
-                        && board[(endArr / 10) - 1] [(endArr % 10) + 1].getColor() == 'W')
-                        && curTurn == 'W') {
-                            moveFrom.add(endArr - 9);
+                        if (curTurn == 'W') {
+                            if (board[(endArr / 10) - 1] [(endArr % 10) + 1].getType() == 'P'
+                            && board[(endArr / 10) - 1] [(endArr % 10) + 1].getColor() == 'W') {
+                                moveFrom.add(endArr - 9);
+                            }
                         }
-                        if ((board[(endArr / 10) + 1] [(endArr % 10) + 1].getType() == 'P'
-                        && board[(endArr / 10) + 1] [(endArr % 10) + 1].getColor() == 'B')
-                        && curTurn == 'B') {
-                            moveFrom.add(endArr + 11);
+                        if ( curTurn == 'B') {
+                            if (board[(endArr / 10) + 1] [(endArr % 10) + 1].getType() == 'P'
+                            && board[(endArr / 10) + 1] [(endArr % 10) + 1].getColor() == 'B') {
+                                moveFrom.add(endArr + 11);
+                            }
                         }    
                     }
                 }
@@ -480,8 +486,44 @@ class Main {
         
     }
     public static boolean legalPos () {
+        String kPos = "";
         if (moveNum % 2 == 0) {
-
+            for (int x = 0; x < 8; x++) {
+                for (int y = 0; y < 8; y++) {
+                    if (board[x][y].getColor() == 'W' && board[x][y].getType() == 'K') {
+                        kPos = arrToPos((x * 10) + y);
+                        System.out.println(kPos);
+                    }
+                }
+            }
+            if (((canMove(("P " + kPos + " B")).size() != 0
+                || canMove(("N " + kPos + " B")).size() != 0)
+                || (canMove(("B " + kPos + " B")).size() != 0
+                || canMove(("R " + kPos + " B")).size() != 0))
+                || (canMove(("Q " + kPos + " B")).size() != 0)
+                || canMove(("K " + kPos + " B")).size() != 0) {
+                System.out.println("Illegal Position");
+                return false;
+            }
+        }
+        else {
+            for (int x = 0; x < 8; x++) {
+                for (int y = 0; y < 8; y++) {
+                    if (board[x][y].getColor() == 'B' && board[x][y].getType() == 'K') {
+                        kPos = arrToPos((x * 10) + y);
+                        System.out.println(kPos);
+                    }
+                }
+            }
+            if (((canMove(("P " + kPos + " W")).size() != 0
+                || canMove(("N " + kPos + " W")).size() != 0)
+                || (canMove(("B " + kPos + " W")).size() != 0
+                || canMove(("R " + kPos + " W")).size() != 0))
+                || (canMove(("Q " + kPos + " W")).size() != 0)
+                || canMove(("K " + kPos + " W")).size() != 0) {
+                System.out.println("Illegal Position");
+                return false;
+            }
         }
         return true;
     }
@@ -606,17 +648,20 @@ class Main {
         else if (curLine.length() == 6) {
             Pattern pattern = Pattern.compile("[a-h]x[a-h][18]=[NBRQ]");
             matcher = pattern.matcher(curLine);
-            if (matcher.matches()) {                        piece = 'P';
+            if (matcher.matches()) {
+                piece = 'P';
                 endSq = curLine.substring(2, 4);
             }
             Pattern pattern1 = Pattern.compile("[NBRQK][a-h]x[a-h][1-8][+#]");
             matcher = pattern1.matcher(curLine);
-            if (matcher.matches()) {                        piece = curLine.charAt(0);
+            if (matcher.matches()) {
+                piece = curLine.charAt(0);
                 endSq = curLine.substring(3, 5);
             }
             Pattern pattern2 = Pattern.compile("[NBRQK][1-8]x[a-h][1-8][+#]");
             matcher = pattern2.matcher(curLine);
-            if (matcher.matches()) {                        piece = 'P';
+            if (matcher.matches()) {
+                piece = 'P';
                 endSq = curLine.substring(3, 5);
             }
             if (curLine.equals("0-0-0+") || curLine.equals("0-0-0#")) {

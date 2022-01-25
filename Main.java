@@ -45,7 +45,7 @@ class Main {
         board[7][7] = new Piece(2, 'B', 'R');
         board[6][0] = new Piece(2, 'B', 'P');
         board[6][1] = new Piece(2, 'B', 'P');
-        board[6][2] = new Piece(2, 'B', 'P'
+        board[6][2] = new Piece(2, 'B', 'P');
         board[6][3] = new Piece(2, 'B', 'P');
         board[6][4] = new Piece(2, 'B', 'P');
         board[6][5] = new Piece(2, 'B', 'P');
@@ -107,18 +107,19 @@ class Main {
         int endArr = posToArr(endPos);
         if (curLine.substring(0, 3) == "0-0") {
             if (curLine.charAt(4) == 'W') {
-                
+               curTurn = 'W'; 
+
             }
             else if (curLine.charAt(4) == 'B') {
-                
+               curTurn = 'B'; 
             }
         }
         else if (curLine.substring(0, 5) == "0-0-0") {
             if (curLine.charAt(6) == 'W') {
-                
+               curTurn = 'W'; 
             }
             if (curLine.charAt(6) == 'B') {
-                
+               curTurn = 'B'; 
             }
         }
         else if (board[endArr / 10][endArr % 10].getColor() != curTurn) {
@@ -462,12 +463,34 @@ class Main {
     }
 
     public static void doMove (ArrayList<Integer> startArr, String curLine) {
+        int s;
         if (startArr.size() == 0) {
             moveNum--;
             System.out.println("Illegal move was entered");
             return;
         }
-        int s = startArr.get(0);
+        else if (startArr.size() == 2) {
+            char modifier = curLine.charAt(7);
+            if (modifier > 47 && modifier < 58) {
+                if (arrToPos(startArr.get(0)).charAt(1) == modifier) {
+                    s = startArr.get(0);
+                }
+                else {
+                    s = startArr.get(1);
+                }
+            }
+            else {
+                if (arrToPos(startArr.get(0)).charAt(0) == modifier) {
+                    s = startArr.get(0);
+                }
+                else {
+                    s = startArr.get(1);
+                }
+            }
+        }
+        else {
+            s = startArr.get(0);
+        }    
         String endPos = curLine.substring(2, 4);
         int endArr = posToArr(endPos);
         char sType = board[s / 10][s % 10].getType();
@@ -540,8 +563,10 @@ class Main {
     }
     public static String notationParse (String curLine) {
         Matcher matcher;
-        char piece = 'x';
-        String endSq = "yz";
+        char piece = '\0';
+        char modifier = '\0';
+        String endSq = "";
+        
 //        String startSq = "";
         if (curLine.length() == 2) {
             Pattern pattern = Pattern.compile("[a-h][1-8]");
@@ -557,6 +582,7 @@ class Main {
             if (matcher.matches()) {
                 piece = 'P';
                 endSq = curLine.substring(1, 3);
+                modifier = curLine.charAt(0);
             }
             Pattern pattern1 = Pattern.compile("[NBRQK][a-h][1-8]");
             matcher = pattern1.matcher(curLine);
@@ -571,7 +597,12 @@ class Main {
                 endSq = curLine.substring(0, 2);
             }
             if (curLine.equals("0-0")) {
-                System.out.println("kingside castles");
+                if (moveNum % 2 == 0) {
+                    return "0-0 W";
+                }
+                else {
+                    return "0-0 B";
+                }
             }
         }
         else if (curLine.length() == 4) {
@@ -580,6 +611,7 @@ class Main {
             if (matcher.matches()) {
                 piece = 'P';
                 endSq = curLine.substring(2, 4);
+                modifier = curLine.charAt(0);
             }
             Pattern pattern1 = Pattern.compile("[NBRQK]x[a-h][1-8]");
             matcher = pattern1.matcher(curLine);
@@ -592,12 +624,14 @@ class Main {
             if (matcher.matches()) {
                 piece = curLine.charAt(0);
                 endSq = curLine.substring(2, 4);
+                modifier = curLine.charAt(1);
             }
             Pattern pattern3 = Pattern.compile("[NBRQK][1-8][a-h][1-8]");
             matcher = pattern3.matcher(curLine);
             if (matcher.matches()) {
                 piece = curLine.charAt(0);
                 endSq = curLine.substring(2, 4);
+                modifier = curLine.charAt(1);
             }
             Pattern pattern4 = Pattern.compile("[a-h][18]=[NBRQ]");
             matcher = pattern4.matcher(curLine);
@@ -612,7 +646,12 @@ class Main {
                 endSq = curLine.substring(1, 3);
             }
             if (curLine.equals("0-0+") || curLine.equals("0-0#")) {
-                System.out.println("kingside castles");
+                if (moveNum % 2 == 0) {
+                    return "0-0 W";
+                }
+                else {
+                    return "0-0 B";
+                }
             }
         }
         else if (curLine.length() == 5) {
@@ -621,18 +660,21 @@ class Main {
             if (matcher.matches()) {
                 piece = curLine.charAt(0);
                 endSq = curLine.substring(3, 5);
+                modifier = curLine.charAt(1);
             }
             Pattern pattern1 = Pattern.compile("[NBRQK][1-8]x[a-h][1-8]");
             matcher = pattern1.matcher(curLine);
             if (matcher.matches()) {
                 piece = curLine.charAt(0);
                 endSq = curLine.substring(3, 5);
+                modifier = curLine.charAt(1);
             }
             Pattern pattern2 = Pattern.compile("[a-h]x[a-h][1-8][+#]");
             matcher = pattern2.matcher(curLine);
             if (matcher.matches()) {
                 piece = 'P';
                 endSq = curLine.substring(2, 4);
+                modifier = curLine.charAt(0);
             }
             Pattern pattern3 = Pattern.compile("[NBRQK]x[a-h][1-8][+#]");
             matcher = pattern3.matcher(curLine);
@@ -645,12 +687,14 @@ class Main {
             if (matcher.matches()) {
                 piece = curLine.charAt(0);
                 endSq = curLine.substring(2, 4);
+                modifier = curLine.charAt(1);
             }
             Pattern pattern5 = Pattern.compile("[NBRQK][1-8][a-h][1-8][+#]");
             matcher = pattern5.matcher(curLine);
             if (matcher.matches()) {
                 piece = curLine.charAt(0);
                 endSq = curLine.substring(2, 4);
+                modifier = curLine.charAt(1);
             }
             Pattern pattern6 = Pattern.compile("[a-h][18]=[NBRQ][+#]");
             matcher = pattern6.matcher(curLine);
@@ -663,9 +707,15 @@ class Main {
             if (matcher.matches()) {
                 piece = 'P';
                 endSq = curLine.substring(1, 3);
+                modifier = curLine.charAt(0);
             }
             if (curLine.equals("0-0-0")) {
-                System.out.println("queenside castles");
+                if (moveNum % 2 == 0) {
+                    return "0-0-0 W";
+                }
+                else {
+                    return "0-0-0 B";
+                }
             }
         }
         else if (curLine.length() == 6) {
@@ -674,27 +724,36 @@ class Main {
             if (matcher.matches()) {
                 piece = 'P';
                 endSq = curLine.substring(2, 4);
+                modifier = curLine.charAt(0);
             }
             Pattern pattern1 = Pattern.compile("[NBRQK][a-h]x[a-h][1-8][+#]");
             matcher = pattern1.matcher(curLine);
             if (matcher.matches()) {
                 piece = curLine.charAt(0);
                 endSq = curLine.substring(3, 5);
+                modifier = curLine.charAt(1);
             }
             Pattern pattern2 = Pattern.compile("[NBRQK][1-8]x[a-h][1-8][+#]");
             matcher = pattern2.matcher(curLine);
             if (matcher.matches()) {
                 piece = 'P';
                 endSq = curLine.substring(3, 5);
+                modifier = curLine.charAt(1);
             }
             if (curLine.equals("0-0-0+") || curLine.equals("0-0-0#")) {
-                System.out.println("queenside castles");
+                if (moveNum % 2 == 0) {
+                    return "0-0-0 W";
+                }
+                else {
+                    return "0-0-0 B";
+                }
             }
             Pattern pattern3 = Pattern.compile("[a-h][a-h][18]=[NBRQ][+#]");
             matcher = pattern3.matcher(curLine);
             if (matcher.matches()) {
                 piece = 'P';
                 endSq = curLine.substring(1, 3);
+                modifier = curLine.charAt(0);
             }
         }
         else if (curLine.length() == 7) {
@@ -703,21 +762,22 @@ class Main {
             if (matcher.matches()) {
                 piece = 'P';
                 endSq = curLine.substring(2, 4);
+                modifier = curLine.charAt(0);
             }
         }
-        if ((piece + endSq).equals("xyz")) {
+        if ((piece + endSq + modifier).length() == 0) {
             return "Invalid Notation";
         }
         
         if (moveNum % 2 == 0) {
             moveNum += 1;
 //            System.out.println(piece + " " + endSq + " W");
-            return piece + " " + endSq + " W";
+            return piece + " " + endSq + " W " + modifier;
         }
         else {
             moveNum += 1;
 //            System.out.println(piece + " " + endSq + " B");
-            return piece + " " + endSq + " B";
+            return piece + " " + endSq + " B " + modifier;
         }
     }
 }

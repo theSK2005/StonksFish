@@ -107,35 +107,35 @@ class Main {
             && !wKHasMoved)
             && !wRHHasMoved) {
                 char curTurn = 'W';
-                moveNum++;
                 if (!legalPos()) {
+                    moveNum++;
                     System.out.println("Cannot castle during check");
                     moveNum--;
-                    return moveFrom;
                 }
-                if (((canMove(("P f1 W")).size() != 0
-                || canMove(("N f1 W")).size() != 0)
-                || (canMove(("B f1  W")).size() != 0
-                || canMove(("R f1  W")).size() != 0))
-                || (canMove(("Q f1 W")).size() != 0)
-                || canMove(("K f1 W")).size() != 0) {
+                else if (((canMove(("P f1 B")).size() != 0
+                || canMove(("N f1 B")).size() != 0)
+                || (canMove(("B f1  B")).size() != 0
+                || canMove(("R f1  B")).size() != 0))
+                || (canMove(("Q f1 B")).size() != 0)
+                || canMove(("K f1 B")).size() != 0) {
                     System.out.println("Cannot castle through check");
-                    return moveFrom;
                 }
-                if (((canMove(("P g1 W")).size() != 0
-                || canMove(("N g1 W")).size() != 0)
-                || (canMove(("B g1  W")).size() != 0
-                || canMove(("R g1  W")).size() != 0))
-                || (canMove(("Q g1 W")).size() != 0)
-                || canMove(("K g1 W")).size() != 0) {
+                else if (((canMove(("P g1 B")).size() != 0
+                || canMove(("N g1 B")).size() != 0)
+                || (canMove(("B g1  B")).size() != 0
+                || canMove(("R g1  B")).size() != 0))
+                || (canMove(("Q g1 B")).size() != 0)
+                || canMove(("K g1 B")).size() != 0) {
                     System.out.println("Cannot castle into check");
-                    return moveFrom;
                 }
-                if (board[0][5].getColor() != 'E'
+                else if (board[0][5].getColor() != 'E'
                 || board[0][6].getColor() != 'E'){
                     System.out.println("There are pieces between the King and Rook");
-                    return moveFrom;
                 }
+                else {
+                    moveFrom.add(100);
+                }
+                return moveFrom;
             }
             if ((curLine.charAt(4) == 'B'
             && !bKHasMoved)

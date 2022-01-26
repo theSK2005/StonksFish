@@ -102,345 +102,405 @@ class Main {
     public static ArrayList<Integer> canMove (String curLine) {
         ArrayList<Integer> moveFrom = new ArrayList<Integer>();
         char piece = curLine.charAt(0);
-        String endPos = curLine.substring(2, 4);
-        char curTurn = curLine.charAt(5);
-        int endArr = posToArr(endPos);
-        if (curLine.substring(0, 3) == "0-0") {
-            if (curLine.charAt(4) == 'W') {
-               curTurn = 'W'; 
-
+        if (curLine.substring(0, 3).equals("0-0")) {
+            if ((curLine.charAt(4) == 'W'
+            && !wKHasMoved)
+            && !wRHHasMoved) {
+                char curTurn = 'W';
+                moveNum++;
+                if (!legalPos()) {
+                    System.out.println("Cannot castle during check");
+                    moveNum--;
+                    return moveFrom;
+                }
+                if (((canMove(("P f1 W")).size() != 0
+                || canMove(("N f1 W")).size() != 0)
+                || (canMove(("B f1  W")).size() != 0
+                || canMove(("R f1  W")).size() != 0))
+                || (canMove(("Q f1 W")).size() != 0)
+                || canMove(("K f1 W")).size() != 0) {
+                    System.out.println("Cannot castle through check");
+                    return moveFrom;
+                }
+                if (((canMove(("P g1 W")).size() != 0
+                || canMove(("N g1 W")).size() != 0)
+                || (canMove(("B g1  W")).size() != 0
+                || canMove(("R g1  W")).size() != 0))
+                || (canMove(("Q g1 W")).size() != 0)
+                || canMove(("K g1 W")).size() != 0) {
+                    System.out.println("Cannot castle into check");
+                    return moveFrom;
+                }
+                if (board[0][5].getColor() != 'E'
+                || board[0][6].getColor() != 'E'){
+                    System.out.println("There are pieces between the King and Rook");
+                    return moveFrom;
+                }
             }
-            else if (curLine.charAt(4) == 'B') {
-               curTurn = 'B'; 
+            if ((curLine.charAt(4) == 'B'
+            && !bKHasMoved)
+            && !bRHHasMoved) {
+               char curTurn = 'B'; 
+                moveNum++;
+                if (!legalPos()) {
+                    return moveFrom;
+                }
+                if (((canMove(("P f1 W")).size() != 0
+                || canMove(("N f1 W")).size() != 0)
+                || (canMove(("B f1  W")).size() != 0
+                || canMove(("R f1  W")).size() != 0))
+                || (canMove(("Q f1 W")).size() != 0)
+                || canMove(("K f1 W")).size() != 0) {
+                    System.out.println("Cannot castle through check");
+                    return moveFrom;
+                }
+                if (((canMove(("P g1 W")).size() != 0
+                || canMove(("N g1 W")).size() != 0)
+                || (canMove(("B g1  W")).size() != 0
+                || canMove(("R g1  W")).size() != 0))
+                || (canMove(("Q g1 W")).size() != 0)
+                || canMove(("K g1 W")).size() != 0) {
+                    System.out.println("Cannot castle into check");
+                    return moveFrom;
+                }
+                moveNum--;
             }
         }
-        else if (curLine.substring(0, 5) == "0-0-0") {
-            if (curLine.charAt(6) == 'W') {
-               curTurn = 'W'; 
+        else if (curLine.substring(0, 5).equals("0-0-0")) {
+            if ((curLine.charAt(6) == 'W'
+            && !wKHasMoved)
+            && !wRAHasMoved) {
+               char curTurn = 'W';
             }
-            if (curLine.charAt(6) == 'B') {
-               curTurn = 'B'; 
+            if ((curLine.charAt(6) == 'B'
+            && !bKHasMoved)
+            && !bRAHasMoved) {
+               char curTurn = 'B'; 
             }
         }
-        else if (board[endArr / 10][endArr % 10].getColor() != curTurn) {
-            if (piece == 'P') {
-                if (board[endArr / 10][endArr % 10].getColor() == 'E') {
-                    if (endArr / 10 != 0) {
-                        if ((board[endArr / 10 - 1] [endArr % 10].getType() == 'P'
-                        && board[endArr / 10 - 1] [endArr % 10].getColor() == 'W')
-                        && curTurn == 'W') {
-                            moveFrom.add(endArr - 10);
+        else {
+            char curTurn = curLine.charAt(5);
+            String endPos = curLine.substring(2, 4);
+            int endArr = posToArr(endPos);
+            if (board[endArr / 10][endArr % 10].getColor() != curTurn) {
+                if (piece == 'P') {
+                    if (board[endArr / 10][endArr % 10].getColor() == 'E') {
+                        if (endArr / 10 != 0) {
+                            if ((board[endArr / 10 - 1] [endArr % 10].getType() == 'P'
+                            && board[endArr / 10 - 1] [endArr % 10].getColor() == 'W')
+                            && curTurn == 'W') {
+                                moveFrom.add(endArr - 10);
+                            }
+                            if (endArr / 10 != 1) {
+                                if (((board[endArr / 10 - 2] [endArr % 10].getType() == 'P') 
+                                && (endArr / 10 == 3)) 
+                                && (board[endArr / 10 - 2][endArr % 10].getColor() == 'W' 
+                                && curTurn == 'W')) {
+                                    moveFrom.add(endArr - 20);
+                                }
+                            }
                         }
-                        if (endArr / 10 != 1) {
-                            if (((board[endArr / 10 - 2] [endArr % 10].getType() == 'P') 
-                            && (endArr / 10 == 3)) 
-                            && (board[endArr / 10 - 2][endArr % 10].getColor() == 'W' 
-                            && curTurn == 'W')) {
-                                moveFrom.add(endArr - 20);
+                        if (endArr / 10 != 7) {
+                            if ((board[endArr / 10 + 1] [endArr % 10].getType() == 'P'
+                            && board[endArr / 10 + 1] [endArr % 10].getColor() == 'B')
+                            && curTurn == 'B') {
+                                moveFrom.add(endArr + 10);
+                            }
+                            if (endArr / 10 != 6) {
+                                if (((board[endArr / 10 + 2] [endArr % 10].getType() == 'P') 
+                                && (endArr / 10 == 4)) 
+                                && (board[endArr / 10 + 2][endArr % 10].getColor() == 'B' 
+                                && curTurn == 'B')) {
+                                    moveFrom.add(endArr + 20);
+                                }        
                             }
                         }
                     }
-                    if (endArr / 10 != 7) {
-                        if ((board[endArr / 10 + 1] [endArr % 10].getType() == 'P'
-                        && board[endArr / 10 + 1] [endArr % 10].getColor() == 'B')
-                        && curTurn == 'B') {
-                            moveFrom.add(endArr + 10);
+                    else {
+                        if (endArr % 10 != 0) {
+                            if (curTurn == 'W') {
+                                if (board[(endArr / 10) - 1] [(endArr % 10) - 1].getType() == 'P'
+                                && board[(endArr / 10) - 1] [(endArr % 10) - 1].getColor() == 'W') {
+                                    moveFrom.add(endArr - 11);
+                                }
+                            }
+                            if (curTurn == 'B') {
+                                if(board[(endArr / 10) + 1] [(endArr % 10) - 1].getType() == 'P'
+                                && board[(endArr / 10) + 1] [(endArr % 10) - 1].getColor() == 'B') {
+                                    moveFrom.add(endArr + 9);
+                                }
+                            }    
                         }
-                        if (endArr / 10 != 6) {
-                            if (((board[endArr / 10 + 2] [endArr % 10].getType() == 'P') 
-                            && (endArr / 10 == 4)) 
-                            && (board[endArr / 10 + 2][endArr % 10].getColor() == 'B' 
-                            && curTurn == 'B')) {
-                                moveFrom.add(endArr + 20);
-                            }        
+                        if (endArr % 10 != 7) {
+                            if (curTurn == 'W') {
+                                if (board[(endArr / 10) - 1] [(endArr % 10) + 1].getType() == 'P'
+                                && board[(endArr / 10) - 1] [(endArr % 10) + 1].getColor() == 'W') {
+                                    moveFrom.add(endArr - 9);
+                                }
+                            }
+                            if ( curTurn == 'B') {
+                                if (board[(endArr / 10) + 1] [(endArr % 10) + 1].getType() == 'P'
+                                && board[(endArr / 10) + 1] [(endArr % 10) + 1].getColor() == 'B') {
+                                    moveFrom.add(endArr + 11);
+                                }
+                            }    
                         }
                     }
                 }
-                else {
-                    if (endArr % 10 != 0) {
-                        if (curTurn == 'W') {
-                            if (board[(endArr / 10) - 1] [(endArr % 10) - 1].getType() == 'P'
-                            && board[(endArr / 10) - 1] [(endArr % 10) - 1].getColor() == 'W') {
-                                moveFrom.add(endArr - 11);
+
+
+                else if (piece == 'N') {
+                        if (((endArr / 10) + 1 < 8) && ((endArr % 10) + 2 < 8)) {
+                            if (board[(endArr / 10) + 1][(endArr % 10) + 2].getType() == 'N' 
+                            && board[(endArr / 10) + 1][(endArr % 10) + 2].getColor() == curTurn) {
+                                moveFrom.add(endArr + 12);
+                            }
+
+                        }
+                        if (((endArr / 10) - 1 >= 0) && ((endArr % 10) + 2 < 8)) {
+                            if (board[(endArr / 10) - 1][(endArr % 10) + 2].getType() == 'N' 
+                            && board[(endArr / 10) - 1][(endArr % 10) + 2].getColor() == curTurn) {
+                                moveFrom.add(endArr - 8);
+                            }
+
+                        }
+                        if (((endArr / 10) + 1 < 8) && ((endArr % 10) - 2 >= 0)) {
+                            if (board[(endArr / 10) + 1][(endArr % 10) - 2].getType() == 'N' 
+                            && board[(endArr / 10) + 1][(endArr % 10) - 2].getType() == curTurn) {
+                                moveFrom.add(endArr + 8);
+                            }
+
+                        }
+                        if (((endArr / 10) - 1 >= 0) && ((endArr % 10) - 2 >= 0)) {
+                            if (board[(endArr / 10) - 1][(endArr % 10) - 2].getType() == 'N' 
+                            && board[(endArr / 10) - 1][(endArr % 10) - 2].getColor() == curTurn) {
+                                moveFrom.add(endArr - 12);
                             }
                         }
-                        if (curTurn == 'B') {
-                            if(board[(endArr / 10) + 1] [(endArr % 10) - 1].getType() == 'P'
-                            && board[(endArr / 10) + 1] [(endArr % 10) - 1].getColor() == 'B') {
-                                moveFrom.add(endArr + 9);
+                        if (((endArr / 10) + 2 < 8) && ((endArr % 10) + 1 < 8)) {
+                            if (board[(endArr / 10) + 2][(endArr % 10) + 1].getType() == 'N' 
+                            && board[(endArr / 10) + 2][(endArr % 10) + 1].getColor() == curTurn) {
+                                moveFrom.add(endArr + 21);
                             }
-                        }    
-                    }
-                    if (endArr % 10 != 7) {
-                        if (curTurn == 'W') {
-                            if (board[(endArr / 10) - 1] [(endArr % 10) + 1].getType() == 'P'
-                            && board[(endArr / 10) - 1] [(endArr % 10) + 1].getColor() == 'W') {
-                                moveFrom.add(endArr - 9);
-                            }
+
                         }
-                        if ( curTurn == 'B') {
-                            if (board[(endArr / 10) + 1] [(endArr % 10) + 1].getType() == 'P'
-                            && board[(endArr / 10) + 1] [(endArr % 10) + 1].getColor() == 'B') {
-                                moveFrom.add(endArr + 11);
+                        if (((endArr / 10) - 2 >= 0) && ((endArr % 10) + 1 < 8)) {
+                            if (board[(endArr / 10) - 2][(endArr % 10) + 1].getType() == 'N' 
+                            && board[(endArr / 10) - 2][(endArr % 10) + 1].getColor() == curTurn) {
+                                moveFrom.add(endArr - 19);
                             }
-                        }    
-                    }
+
+                        }
+                        if (((endArr / 10) + 2 < 8) && ((endArr % 10) - 1 >= 0)) {
+                            if (board[(endArr / 10) + 2][(endArr % 10) - 1].getType() == 'N' 
+                            && board[(endArr / 10) + 2][(endArr % 10) - 1].getColor() == curTurn) {
+                                moveFrom.add(endArr + 19);
+                            }
+
+                        }
+                        if (((endArr / 10) - 2 >= 0) && ((endArr % 10) - 1 >= 0)) {
+                            if (board[(endArr / 10) - 2][(endArr % 10) - 1].getType() == 'N' 
+                            && board[(endArr / 10) - 2][(endArr % 10) - 1].getColor() == curTurn) {
+                                moveFrom.add(endArr - 21);
+                            }
+
+                        }
+                    
                 }
-            }
 
-
-            else if (piece == 'N') {
-                    if (((endArr / 10) + 1 < 8) && ((endArr % 10) + 2 < 8)) {
-                        if (board[(endArr / 10) + 1][(endArr % 10) + 2].getType() == 'N' 
-                        && board[(endArr / 10) + 1][(endArr % 10) + 2].getColor() == curTurn) {
-                            moveFrom.add(endArr + 12);
-                        }
-
-                    }
-                    if (((endArr / 10) - 1 >= 0) && ((endArr % 10) + 2 < 8)) {
-                        if (board[(endArr / 10) - 1][(endArr % 10) + 2].getType() == 'N' 
-                        && board[(endArr / 10) - 1][(endArr % 10) + 2].getColor() == curTurn) {
-                            moveFrom.add(endArr - 8);
-                        }
-
-                    }
-                    if (((endArr / 10) + 1 < 8) && ((endArr % 10) - 2 >= 0)) {
-                        if (board[(endArr / 10) + 1][(endArr % 10) - 2].getType() == 'N' 
-                        && board[(endArr / 10) + 1][(endArr % 10) - 2].getType() == curTurn) {
-                            moveFrom.add(endArr + 8);
-                        }
-
-                    }
-                    if (((endArr / 10) - 1 >= 0) && ((endArr % 10) - 2 >= 0)) {
-                        if (board[(endArr / 10) - 1][(endArr % 10) - 2].getType() == 'N' 
-                        && board[(endArr / 10) - 1][(endArr % 10) - 2].getColor() == curTurn) {
-                            moveFrom.add(endArr - 12);
-                        }
-                    }
-                    if (((endArr / 10) + 2 < 8) && ((endArr % 10) + 1 < 8)) {
-                        if (board[(endArr / 10) + 2][(endArr % 10) + 1].getType() == 'N' 
-                        && board[(endArr / 10) + 2][(endArr % 10) + 1].getColor() == curTurn) {
-                            moveFrom.add(endArr + 21);
-                        }
-
-                    }
-                    if (((endArr / 10) - 2 >= 0) && ((endArr % 10) + 1 < 8)) {
-                        if (board[(endArr / 10) - 2][(endArr % 10) + 1].getType() == 'N' 
-                        && board[(endArr / 10) - 2][(endArr % 10) + 1].getColor() == curTurn) {
-                            moveFrom.add(endArr - 19);
-                        }
-
-                    }
-                    if (((endArr / 10) + 2 < 8) && ((endArr % 10) - 1 >= 0)) {
-                        if (board[(endArr / 10) + 2][(endArr % 10) - 1].getType() == 'N' 
-                        && board[(endArr / 10) + 2][(endArr % 10) - 1].getColor() == curTurn) {
-                            moveFrom.add(endArr + 19);
-                        }
-
-                    }
-                    if (((endArr / 10) - 2 >= 0) && ((endArr % 10) - 1 >= 0)) {
-                        if (board[(endArr / 10) - 2][(endArr % 10) - 1].getType() == 'N' 
-                        && board[(endArr / 10) - 2][(endArr % 10) - 1].getColor() == curTurn) {
-                            moveFrom.add(endArr - 21);
-                        }
-
-                    }
-                
-            }
-
-            else if (piece == 'B') {
-                    for (int x = 1; (x < 8 - (endArr / 10)) && (x < 8 - (endArr % 10)); x++) {
-                        if (board[(endArr / 10) + x][(endArr % 10) + x].getType() != 'E'
+                else if (piece == 'B') {
+                        for (int x = 1; (x < 8 - (endArr / 10)) && (x < 8 - (endArr % 10)); x++) {
+                            if (board[(endArr / 10) + x][(endArr % 10) + x].getType() != 'E'
                             && (board[(endArr / 10) + x][(endArr % 10) + x].getType() != 'B'
                             || board[(endArr / 10) + x][(endArr % 10) + x].getColor() != curTurn)) {
-                            break;
-                        }
-                        if (board[(endArr / 10) + x][(endArr % 10) + x].getType() == 'B'
+                                break;
+                            }
+                            if (board[(endArr / 10) + x][(endArr % 10) + x].getType() == 'B'
                             && (board[(endArr / 10) + x][(endArr % 10) + x].getColor() == curTurn)) {
-                            moveFrom.add(endArr + (x * 11));
+                                moveFrom.add(endArr + (x * 11));
+                            }
                         }
-                    }
-                    for (int x = 1; (x <= endArr / 10) && (x <= endArr % 10); x++) {
-                        if (board[(endArr / 10) - x][(endArr % 10) - x].getType() != 'E'
+                        for (int x = 1; (x <= endArr / 10) && (x <= endArr % 10); x++) {
+                            if (board[(endArr / 10) - x][(endArr % 10) - x].getType() != 'E'
                             && (board[(endArr / 10) - x][(endArr % 10) - x].getType() != 'B'
                             || board[(endArr / 10) - x][(endArr % 10) - x].getColor() != curTurn)) {
-                            break;
-                        }
-                        if (board[(endArr / 10) - x][(endArr % 10) - x].getType() == 'B'
+                                break;
+                            }
+                            if (board[(endArr / 10) - x][(endArr % 10) - x].getType() == 'B'
                             && (board[(endArr / 10) - x][(endArr % 10) - x].getColor() == curTurn)) {
-                            moveFrom.add(endArr - (x * 11));
+                                moveFrom.add(endArr - (x * 11));
+                            }
                         }
-                    }
-                    for (int x = 1; (x < 8 - (endArr / 10)) && (x <= endArr % 10); x++) {
-                        if (board[(endArr / 10) + x][(endArr % 10) - x].getType() != 'E'
+                        for (int x = 1; (x < 8 - (endArr / 10)) && (x <= endArr % 10); x++) {
+                            if (board[(endArr / 10) + x][(endArr % 10) - x].getType() != 'E'
                             && (board[(endArr / 10) + x][(endArr % 10) - x].getType() != 'B'
                             || board[(endArr / 10) + x][(endArr % 10) - x].getColor() != curTurn)) {
-                            break;
-                        }
-                        if (board[(endArr / 10) + x][(endArr % 10) - x].getType() == 'B'
+                                break;
+                            }
+                            if (board[(endArr / 10) + x][(endArr % 10) - x].getType() == 'B'
                             && (board[(endArr / 10) + x][(endArr % 10) - x].getColor() == curTurn)) {
-                            moveFrom.add(endArr + (x * 9));
+                                moveFrom.add(endArr + (x * 9));
+                            }
                         }
-                    }
-                    for (int x = 1; (x <= endArr / 10) && (x < 8 - (endArr % 10)); x++) {
-                        if (board[(endArr / 10) - x][(endArr % 10) + x].getType() != 'E'
+                        for (int x = 1; (x <= endArr / 10) && (x < 8 - (endArr % 10)); x++) {
+                            if (board[(endArr / 10) - x][(endArr % 10) + x].getType() != 'E'
                             && (board[(endArr / 10) - x][(endArr % 10) + x].getType() != 'B'
                             || board[(endArr / 10) - x][(endArr % 10) + x].getColor() != curTurn)) {
-                            break;
-                        }
-                        if (board[(endArr / 10) - x][(endArr % 10) + x].getType() == 'B'
+                                break;
+                            }
+                            if (board[(endArr / 10) - x][(endArr % 10) + x].getType() == 'B'
                             && (board[(endArr / 10) - x][(endArr % 10) + x].getColor() == curTurn)) {
-                            moveFrom.add(endArr - (x * 9));
+                                moveFrom.add(endArr - (x * 9));
+                            }
                         }
-                    }
-                
-            }
+                    
+                }
 
-            else if (piece == 'R') {
-                    for (int x = (endArr % 10) + 1; x <= 7; x++) {
-                        if (board[endArr / 10][x].getType() != 'E'
-                        && (board[endArr / 10][x].getType() != 'R'
-                        || board[endArr / 10][x].getColor() != curTurn)) {
-                            break;
-                        }
-                        if (board[endArr / 10][x].getType() == 'R'
+                else if (piece == 'R') {
+                        for (int x = (endArr % 10) + 1; x <= 7; x++) {
+                            if (board[endArr / 10][x].getType() != 'E'
+                            && (board[endArr / 10][x].getType() != 'R'
+                            || board[endArr / 10][x].getColor() != curTurn)) {
+                                break;
+                            }
+                            if (board[endArr / 10][x].getType() == 'R'
                             && board[endArr / 10][x].getColor() == curTurn) {
-                            moveFrom.add((endArr / 10) * 10 + x);
+                                moveFrom.add((endArr / 10) * 10 + x);
+                            }
                         }
-                    }
 
-                    for (int x = (endArr % 10) - 1; x >= 0; x--) {
-                        if (board[endArr / 10][x].getType() != 'E'
-                        && (board[endArr / 10][x].getType() != 'R'
-                        || board[endArr / 10][x].getColor() != curTurn)) {
-                            break;
-                        }
-                        if (board[endArr / 10][x].getType() == 'R'
+                        for (int x = (endArr % 10) - 1; x >= 0; x--) {
+                            if (board[endArr / 10][x].getType() != 'E'
+                            && (board[endArr / 10][x].getType() != 'R'
+                            || board[endArr / 10][x].getColor() != curTurn)) {
+                                break;
+                            }
+                            if (board[endArr / 10][x].getType() == 'R'
                             && board[endArr / 10][x].getColor() == curTurn) {
-                            moveFrom.add((endArr / 10) * 10 + x);
+                                moveFrom.add((endArr / 10) * 10 + x);
+                            }
                         }
-                    }
-                    for (int y = (endArr / 10) + 1; y <= 7; y++) {
-                        if (board[y][endArr % 10].getType() != 'E'
-                        && (board[y][endArr % 10].getType() != 'R'
-                        || board[y][endArr % 10].getColor() != curTurn)) {
-                            break;
-                        }
-                        if (board[y][endArr % 10].getType() == 'R'
+                        for (int y = (endArr / 10) + 1; y <= 7; y++) {
+                            if (board[y][endArr % 10].getType() != 'E'
+                            && (board[y][endArr % 10].getType() != 'R'
+                            || board[y][endArr % 10].getColor() != curTurn)) {
+                                break;
+                            }
+                            if (board[y][endArr % 10].getType() == 'R'
                             && board[y][endArr % 10].getColor() == curTurn) {
-                            moveFrom.add(y * 10 + (endArr % 10));
+                                moveFrom.add(y * 10 + (endArr % 10));
+                            }
                         }
-                    }
 
-                    for (int y = (endArr / 10) - 1; y >= 0; y--) {
-                        if (board[y][endArr % 10].getType() != 'E'
-                        && (board[y][endArr % 10].getType() != 'R'
-                        || board[y][endArr % 10].getColor() != curTurn)) {
-                            break;
+                        for (int y = (endArr / 10) - 1; y >= 0; y--) {
+                            if (board[y][endArr % 10].getType() != 'E'
+                            && (board[y][endArr % 10].getType() != 'R'
+                            || board[y][endArr % 10].getColor() != curTurn)) {
+                                break;
+                            }
+                            if (board[y][endArr % 10].getType() == 'R'
+                                && board[y][endArr % 10].getColor() == curTurn) {
+                                moveFrom.add(y * 10 + (endArr % 10));
+                            }
                         }
-                        if (board[y][endArr % 10].getType() == 'R'
-                            && board[y][endArr % 10].getColor() == curTurn) {
-                            moveFrom.add(y * 10 + (endArr % 10));
-                        }
-                    }
-                
-            }
+                    
+                }
 
-            else if (piece == 'Q') {
-                    for (int x = 1; (x < 8 - (endArr / 10)) && (x < 8 - (endArr % 10)); x++) {
-                        if (board[(endArr / 10) + x][(endArr % 10) + x].getType() != 'E'
-                            && (board[(endArr / 10) + x][(endArr % 10) + x].getType() != 'Q'
-                            || board[(endArr / 10) + x][(endArr % 10) + x].getColor() != curTurn)) {
-                            break;
+                else if (piece == 'Q') {
+                        for (int x = 1; (x < 8 - (endArr / 10)) && (x < 8 - (endArr % 10)); x++) {
+                            if (board[(endArr / 10) + x][(endArr % 10) + x].getType() != 'E'
+                                && (board[(endArr / 10) + x][(endArr % 10) + x].getType() != 'Q'
+                                || board[(endArr / 10) + x][(endArr % 10) + x].getColor() != curTurn)) {
+                                break;
+                            }
+                            if (board[(endArr / 10) + x][(endArr % 10) + x].getType() == 'Q'
+                                && (board[(endArr / 10) + x][(endArr % 10) + x].getColor() == curTurn)) {
+                                moveFrom.add(endArr + (x * 11));
+                            }
                         }
-                        if (board[(endArr / 10) + x][(endArr % 10) + x].getType() == 'Q'
-                            && (board[(endArr / 10) + x][(endArr % 10) + x].getColor() == curTurn)) {
-                            moveFrom.add(endArr + (x * 11));
+                        for (int x = 1; (x <= endArr / 10) && (x <= endArr % 10); x++) {
+                            if (board[(endArr / 10) - x][(endArr % 10) - x].getType() != 'E'
+                                && (board[(endArr / 10) - x][(endArr % 10) - x].getType() != 'Q'
+                                || board[(endArr / 10) - x][(endArr % 10) - x].getColor() != curTurn)) {
+                                break;
+                            }
+                            if (board[(endArr / 10) - x][(endArr % 10) - x].getType() == 'Q'
+                                && (board[(endArr / 10) - x][(endArr % 10) - x].getColor() == curTurn)) {
+                                moveFrom.add(endArr - (x * 11));
+                            }
                         }
-                    }
-                    for (int x = 1; (x <= endArr / 10) && (x <= endArr % 10); x++) {
-                        if (board[(endArr / 10) - x][(endArr % 10) - x].getType() != 'E'
-                            && (board[(endArr / 10) - x][(endArr % 10) - x].getType() != 'Q'
-                            || board[(endArr / 10) - x][(endArr % 10) - x].getColor() != curTurn)) {
-                            break;
+                        for (int x = 1; (x < 8 - (endArr / 10)) && (x <= endArr % 10); x++) {
+                            if (board[(endArr / 10) + x][(endArr % 10) - x].getType() != 'E'
+                                && (board[(endArr / 10) + x][(endArr % 10) - x].getType() != 'Q'
+                                || board[(endArr / 10) + x][(endArr % 10) - x].getColor() != curTurn)) {
+                                break;
+                            }
+                            if (board[(endArr / 10) + x][(endArr % 10) - x].getType() == 'Q'
+                                && (board[(endArr / 10) + x][(endArr % 10) - x].getColor() == curTurn)) {
+                                moveFrom.add(endArr + (x * 9));
+                            }
                         }
-                        if (board[(endArr / 10) - x][(endArr % 10) - x].getType() == 'Q'
-                            && (board[(endArr / 10) - x][(endArr % 10) - x].getColor() == curTurn)) {
-                            moveFrom.add(endArr - (x * 11));
+                        for (int x = 1; (x <= endArr / 10) && (x < 8 - (endArr % 10)); x++) {
+                            if (board[(endArr / 10) - x][(endArr % 10) + x].getType() != 'E'
+                                && (board[(endArr / 10) - x][(endArr % 10) + x].getType() != 'Q'
+                                || board[(endArr / 10) - x][(endArr % 10) + x].getColor() != curTurn)) {
+                                break;
+                            }
+                            if (board[(endArr / 10) - x][(endArr % 10) + x].getType() == 'Q'
+                                && (board[(endArr / 10) - x][(endArr % 10) + x].getColor() == curTurn)) {
+                                moveFrom.add(endArr - (x * 9));
+                            }
                         }
-                    }
-                    for (int x = 1; (x < 8 - (endArr / 10)) && (x <= endArr % 10); x++) {
-                        if (board[(endArr / 10) + x][(endArr % 10) - x].getType() != 'E'
-                            && (board[(endArr / 10) + x][(endArr % 10) - x].getType() != 'Q'
-                            || board[(endArr / 10) + x][(endArr % 10) - x].getColor() != curTurn)) {
-                            break;
+                    
+                        for (int x = (endArr % 10) + 1; x <= 7; x++) {
+                            if (board[endArr / 10][x].getType() != 'E'
+                            && (board[endArr / 10][x].getType() != 'Q'
+                            || board[endArr / 10][x].getColor() != curTurn)) {
+                                break;
+                            }
+                            if (board[endArr / 10][x].getType() == 'Q'
+                                && board[endArr / 10][x].getColor() == curTurn) {
+                                moveFrom.add((endArr / 10) * 10 + x);
+                            }
                         }
-                        if (board[(endArr / 10) + x][(endArr % 10) - x].getType() == 'Q'
-                            && (board[(endArr / 10) + x][(endArr % 10) - x].getColor() == curTurn)) {
-                            moveFrom.add(endArr + (x * 9));
-                        }
-                    }
-                    for (int x = 1; (x <= endArr / 10) && (x < 8 - (endArr % 10)); x++) {
-                        if (board[(endArr / 10) - x][(endArr % 10) + x].getType() != 'E'
-                            && (board[(endArr / 10) - x][(endArr % 10) + x].getType() != 'Q'
-                            || board[(endArr / 10) - x][(endArr % 10) + x].getColor() != curTurn)) {
-                            break;
-                        }
-                        if (board[(endArr / 10) - x][(endArr % 10) + x].getType() == 'Q'
-                            && (board[(endArr / 10) - x][(endArr % 10) + x].getColor() == curTurn)) {
-                            moveFrom.add(endArr - (x * 9));
-                        }
-                    }
-                
-                    for (int x = (endArr % 10) + 1; x <= 7; x++) {
-                        if (board[endArr / 10][x].getType() != 'E'
-                        && (board[endArr / 10][x].getType() != 'Q'
-                        || board[endArr / 10][x].getColor() != curTurn)) {
-                            break;
-                        }
-                        if (board[endArr / 10][x].getType() == 'Q'
-                            && board[endArr / 10][x].getColor() == curTurn) {
-                            moveFrom.add((endArr / 10) * 10 + x);
-                        }
-                    }
 
-                    for (int x = (endArr % 10) - 1; x >= 0; x--) {
-                        if (board[endArr / 10][x].getType() != 'E'
-                        && (board[endArr / 10][x].getType() != 'Q'
-                        || board[endArr / 10][x].getColor() != curTurn)) {
-                            break;
+                        for (int x = (endArr % 10) - 1; x >= 0; x--) {
+                            if (board[endArr / 10][x].getType() != 'E'
+                            && (board[endArr / 10][x].getType() != 'Q'
+                            || board[endArr / 10][x].getColor() != curTurn)) {
+                                break;
+                            }
+                            if (board[endArr / 10][x].getType() == 'Q'
+                                && board[endArr / 10][x].getColor() == curTurn) {
+                                moveFrom.add((endArr / 10) * 10 + x);
+                            }
                         }
-                        if (board[endArr / 10][x].getType() == 'Q'
-                            && board[endArr / 10][x].getColor() == curTurn) {
-                            moveFrom.add((endArr / 10) * 10 + x);
+                        for (int y = (endArr / 10) + 1; y <= 7; y++) {
+                            if (board[y][endArr % 10].getType() != 'E'
+                            && (board[y][endArr % 10].getType() != 'Q'
+                            || board[y][endArr % 10].getColor() != curTurn)) {
+                                break;
+                            }
+                            if (board[y][endArr % 10].getType() == 'Q'
+                                && board[y][endArr % 10].getColor() == curTurn) {
+                                moveFrom.add(y * 10 + (endArr % 10));
+                            }
                         }
-                    }
-                    for (int y = (endArr / 10) + 1; y <= 7; y++) {
-                        if (board[y][endArr % 10].getType() != 'E'
-                        && (board[y][endArr % 10].getType() != 'Q'
-                        || board[y][endArr % 10].getColor() != curTurn)) {
-                            break;
-                        }
-                        if (board[y][endArr % 10].getType() == 'Q'
-                            && board[y][endArr % 10].getColor() == curTurn) {
-                            moveFrom.add(y * 10 + (endArr % 10));
-                        }
-                    }
 
-                    for (int y = (endArr / 10) - 1; y >= 0; y--) {
-                        if (board[y][endArr % 10].getType() != 'E'
-                        && (board[y][endArr % 10].getType() != 'Q'
-                        || board[y][endArr % 10].getColor() != curTurn)) {
-                            break;
+                        for (int y = (endArr / 10) - 1; y >= 0; y--) {
+                            if (board[y][endArr % 10].getType() != 'E'
+                            && (board[y][endArr % 10].getType() != 'Q'
+                            || board[y][endArr % 10].getColor() != curTurn)) {
+                                break;
+                            }
+                            if (board[y][endArr % 10].getType() == 'Q'
+                                && board[y][endArr % 10].getColor() == curTurn) {
+                                moveFrom.add(y * 10 + (endArr % 10));
+                            }
                         }
-                        if (board[y][endArr % 10].getType() == 'Q'
-                            && board[y][endArr % 10].getColor() == curTurn) {
-                            moveFrom.add(y * 10 + (endArr % 10));
-                        }
-                    }
-                
-            }
-            else if (piece == 'K') {
+                    
+                }
+                else if (piece == 'K') {
                     for (int x = -1; x < 2; x++) {
                         for (int y = -1; y < 2; y++) {
                             if (((((endArr / 10) + x) > 7) || (((endArr / 10) + x) < 0))
@@ -452,8 +512,8 @@ class Main {
                                 moveFrom.add(endArr + (x * 10) + y);
                             }
                         }
-                    }    
-                
+                    }
+                }
             }
         }
         for (int canMoveFrom : moveFrom) {
@@ -550,11 +610,11 @@ class Main {
                 }
             }
             if (((canMove(("P " + kPos + " B")).size() != 0
-                || canMove(("N " + kPos + " B")).size() != 0)
-                || (canMove(("B " + kPos + " B")).size() != 0
-                || canMove(("R " + kPos + " B")).size() != 0))
-                || (canMove(("Q " + kPos + " B")).size() != 0)
-                || canMove(("K " + kPos + " B")).size() != 0) {
+            || canMove(("N " + kPos + " B")).size() != 0)
+            || (canMove(("B " + kPos + " B")).size() != 0
+            || canMove(("R " + kPos + " B")).size() != 0))
+            || (canMove(("Q " + kPos + " B")).size() != 0)
+            || canMove(("K " + kPos + " B")).size() != 0) {
                 System.out.println("Illegal Position");
                 return false;
             }

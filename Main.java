@@ -103,27 +103,26 @@ class Main {
         ArrayList<Integer> moveFrom = new ArrayList<Integer>();
         char piece = curLine.charAt(0);
         if (curLine.substring(0, 3).equals("0-0")) {
+            moveNum++;
             if ((curLine.charAt(4) == 'W'
             && !wKHasMoved)
             && !wRHHasMoved) {
                 char curTurn = 'W';
                 if (!legalPos()) {
-                    moveNum++;
                     System.out.println("Cannot castle during check");
-                    moveNum--;
                 }
                 else if (((canMove(("P f1 B")).size() != 0
                 || canMove(("N f1 B")).size() != 0)
-                || (canMove(("B f1  B")).size() != 0
-                || canMove(("R f1  B")).size() != 0))
+                || (canMove(("B f1 B")).size() != 0
+                || canMove(("R f1 B")).size() != 0))
                 || (canMove(("Q f1 B")).size() != 0)
                 || canMove(("K f1 B")).size() != 0) {
                     System.out.println("Cannot castle through check");
                 }
                 else if (((canMove(("P g1 B")).size() != 0
                 || canMove(("N g1 B")).size() != 0)
-                || (canMove(("B g1  B")).size() != 0
-                || canMove(("R g1  B")).size() != 0))
+                || (canMove(("B g1 B")).size() != 0
+                || canMove(("R g1 B")).size() != 0))
                 || (canMove(("Q g1 B")).size() != 0)
                 || canMove(("K g1 B")).size() != 0) {
                     System.out.println("Cannot castle into check");
@@ -140,42 +139,104 @@ class Main {
             if ((curLine.charAt(4) == 'B'
             && !bKHasMoved)
             && !bRHHasMoved) {
-               char curTurn = 'B'; 
-                moveNum++;
+                char curTurn = 'B';
                 if (!legalPos()) {
-                    return moveFrom;
+                    System.out.println("Cannot castle during check");
                 }
-                if (((canMove(("P f1 W")).size() != 0
-                || canMove(("N f1 W")).size() != 0)
-                || (canMove(("B f1  W")).size() != 0
-                || canMove(("R f1  W")).size() != 0))
-                || (canMove(("Q f1 W")).size() != 0)
-                || canMove(("K f1 W")).size() != 0) {
+                else if (((canMove(("P f8 W")).size() != 0
+                || canMove(("N f8 W")).size() != 0)
+                || (canMove(("B f8 W")).size() != 0
+                || canMove(("R f8 W")).size() != 0))
+                || (canMove(("Q f8 W")).size() != 0)
+                || canMove(("K f8 W")).size() != 0) {
                     System.out.println("Cannot castle through check");
-                    return moveFrom;
                 }
-                if (((canMove(("P g1 W")).size() != 0
-                || canMove(("N g1 W")).size() != 0)
-                || (canMove(("B g1  W")).size() != 0
-                || canMove(("R g1  W")).size() != 0))
-                || (canMove(("Q g1 W")).size() != 0)
-                || canMove(("K g1 W")).size() != 0) {
+                else if (((canMove(("P g8 W")).size() != 0
+                || canMove(("N g8 W")).size() != 0)
+                || (canMove(("B g8 W")).size() != 0
+                || canMove(("R g8 W")).size() != 0))
+                || (canMove(("Q g8 W")).size() != 0)
+                || canMove(("K g8 W")).size() != 0) {
                     System.out.println("Cannot castle into check");
-                    return moveFrom;
                 }
-                moveNum--;
+                else if (board[7][5].getColor() != 'E'
+                || board[7][6].getColor() != 'E'){
+                    System.out.println("There are pieces between the King and Rook");
+                }
+                else {
+                    moveFrom.add(200);
+                }
+                return moveFrom;
             }
         }
         else if (curLine.substring(0, 5).equals("0-0-0")) {
             if ((curLine.charAt(6) == 'W'
             && !wKHasMoved)
             && !wRAHasMoved) {
-               char curTurn = 'W';
+            moveNum++;
+                char curTurn = 'W';
+                if (!legalPos()) {
+                    System.out.println("Cannot castle during check");
+                }
+                else if (((canMove(("P d1 B")).size() != 0
+                || canMove(("N d1 B")).size() != 0)
+                || (canMove(("B d1 B")).size() != 0
+                || canMove(("R d1 B")).size() != 0))
+                || (canMove(("Q d1 B")).size() != 0)
+                || canMove(("K d1 B")).size() != 0) {
+                    System.out.println("Cannot castle through check");
+                }
+                else if (((canMove(("P b1 B")).size() != 0
+                || canMove(("N c1 B")).size() != 0)
+                || (canMove(("B c1 B")).size() != 0
+                || canMove(("R c1 B")).size() != 0))
+                || (canMove(("Q c1 B")).size() != 0)
+                || canMove(("K c1 B")).size() != 0) {
+                    System.out.println("Cannot castle into check");
+                }
+                else if ((board[0][4].getColor() != 'E'
+                || board[0][3].getColor() != 'E')
+                || board[0][2].getColor() != 'E') {
+                    System.out.println("There are pieces between the King and Rook");
+                }
+                else {
+                    moveFrom.add(300);
+                }
+                return moveFrom;
             }
             if ((curLine.charAt(6) == 'B'
             && !bKHasMoved)
             && !bRAHasMoved) {
-               char curTurn = 'B'; 
+            moveNum++;
+                char curTurn = 'B';
+                if (!legalPos()) {
+                    System.out.println("Cannot castle during check");
+                }
+                else if (((canMove(("P d1 B")).size() != 0
+                || canMove(("N d1 B")).size() != 0)
+                || (canMove(("B d1 B")).size() != 0
+                || canMove(("R d1 B")).size() != 0))
+                || (canMove(("Q d1 B")).size() != 0)
+                || canMove(("K d1 B")).size() != 0) {
+                    System.out.println("Cannot castle through check");
+                }
+                else if (((canMove(("P b1 B")).size() != 0
+                || canMove(("N c1 B")).size() != 0)
+                || (canMove(("B c1 B")).size() != 0
+                || canMove(("R c1 B")).size() != 0))
+                || (canMove(("Q c1 B")).size() != 0)
+                || canMove(("K c1 B")).size() != 0) {
+                    System.out.println("Cannot castle into check");
+                }
+                else if ((board[0][4].getColor() != 'E'
+                || board[0][3].getColor() != 'E')
+                || board[0][2].getColor() != 'E') {
+                    System.out.println("There are pieces between the King and Rook");
+                }
+                else {
+                    moveFrom.add(400);
+                }
+                return moveFrom;
             }
         }
         else {
@@ -524,6 +585,7 @@ class Main {
 
     public static void doMove (ArrayList<Integer> startArr, String curLine) {
         int s;
+        System.out.println(startArr);
         if (startArr.size() == 0) {
             moveNum--;
             System.out.println("Illegal move was entered");

@@ -102,6 +102,7 @@ class Main {
     public static ArrayList<Integer> canMove (String curLine) {
         ArrayList<Integer> moveFrom = new ArrayList<Integer>();
         char piece = curLine.charAt(0);
+        System.out.println(curLine);
         if (curLine.substring(0, 3).equals("0-0")) {
             moveNum++;
             if ((curLine.charAt(4) == 'W'
@@ -169,11 +170,12 @@ class Main {
                 return moveFrom;
             }
         }
-        else if (curLine.substring(0, 5).equals("0-0-0")) {
+        if (curLine.substring(0, 5).equals("0-0-0")) {
+            System.out.println("Castles");
             if ((curLine.charAt(6) == 'W'
             && !wKHasMoved)
             && !wRAHasMoved) {
-            moveNum++;
+                moveNum++;
                 char curTurn = 'W';
                 if (!legalPos()) {
                     System.out.println("Cannot castle during check");
@@ -194,9 +196,9 @@ class Main {
                 || canMove(("K c1 B")).size() != 0) {
                     System.out.println("Cannot castle into check");
                 }
-                else if ((board[0][4].getColor() != 'E'
-                || board[0][3].getColor() != 'E')
-                || board[0][2].getColor() != 'E') {
+                else if ((board[0][3].getColor() != 'E'
+                || board[0][2].getColor() != 'E')
+                || board[0][1].getColor() != 'E') {
                     System.out.println("There are pieces between the King and Rook");
                 }
                 else {
@@ -228,9 +230,9 @@ class Main {
                 || canMove(("K c1 B")).size() != 0) {
                     System.out.println("Cannot castle into check");
                 }
-                else if ((board[0][4].getColor() != 'E'
-                || board[0][3].getColor() != 'E')
-                || board[0][2].getColor() != 'E') {
+                else if ((board[0][3].getColor() != 'E'
+                || board[0][2].getColor() != 'E')
+                || board[0][1].getColor() != 'E') {
                     System.out.println("There are pieces between the King and Rook");
                 }
                 else {
@@ -585,7 +587,6 @@ class Main {
 
     public static void doMove (ArrayList<Integer> startArr, String curLine) {
         int s;
-        System.out.println(startArr);
         if (startArr.size() == 0) {
             moveNum--;
             System.out.println("Illegal move was entered");
@@ -612,7 +613,70 @@ class Main {
         }
         else {
             s = startArr.get(0);
-        }    
+        }
+        if (s == 100) {
+            board[0][6].setType('K');
+            board[0][6].setColor('W');
+            board[0][6].setHeight('2');
+            board[0][5].setType('R');
+            board[0][5].setColor('W');
+            board[0][5].setHeight('2');
+            board[0][7].setType('E');
+            board[0][7].setColor('E');
+            board[0][7].setHeight('2');
+            board[0][4].setType('E');
+            board[0][4].setColor('E');
+            board[0][4].setHeight('2');
+            return;
+        }
+
+        else if (s == 200) {
+            board[7][6].setType('K');
+            board[7][6].setColor('B');
+            board[7][6].setHeight('2');
+            board[7][5].setType('R');
+            board[7][5].setColor('B');
+            board[7][5].setHeight('2');
+            board[7][7].setType('E');
+            board[7][7].setColor('E');
+            board[7][7].setHeight('2');
+            board[7][4].setType('E');
+            board[7][4].setColor('E');
+            board[7][4].setHeight('2');
+            return;
+        }
+        
+        else if (s == 300) {
+            board[0][2].setType('K');
+            board[0][2].setColor('W');
+            board[0][2].setHeight('2');
+            board[0][3].setType('R');
+            board[0][3].setColor('W');
+            board[0][3].setHeight('2');
+            board[0][0].setType('E');
+            board[0][0].setColor('E');
+            board[0][0].setHeight('2');
+            board[0][5].setType('E');
+            board[0][5].setColor('E');
+            board[0][5].setHeight('2');
+            return;
+        }
+
+        else if (s == 400) {
+            board[7][2].setType('K');
+            board[7][2].setColor('B');
+            board[7][2].setHeight('2');
+            board[7][3].setType('R');
+            board[7][3].setColor('B');
+            board[7][3].setHeight('2');
+            board[7][0].setType('E');
+            board[7][0].setColor('E');
+            board[7][0].setHeight('2');
+            board[7][5].setType('E');
+            board[7][5].setColor('E');
+            board[7][5].setHeight('2');
+            return;
+        }
         String endPos = curLine.substring(2, 4);
         int endArr = posToArr(endPos);
         char sType = board[s / 10][s % 10].getType();

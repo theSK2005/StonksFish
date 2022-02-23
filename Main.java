@@ -81,6 +81,8 @@ class Main {
         }
 */
     }
+
+    //prints current board state
     public static void printBoard () {
         for (int x = 7; x >= 0; x--) {
             for (int y = 0; y <= 7; y++) {
@@ -90,19 +92,27 @@ class Main {
         }
     }
 
+    //converts board position to array position (ex. a1 -> 00)
     public static int posToArr (String position) {
         return (((int) (position.charAt(0) - 97)) + 10 * ((int) (position.charAt(1)) - 49));
     }
+
+    //converts array position to board position (ex. 00 -> a1)
     public static String arrToPos (int arrVal) {
         return "" + ((char) (97 + (arrVal % 10))) + ((char) (49 + (arrVal / 10)));
     }
+
+    //gets piece at array position
     public static String pieceAtArr (int arrVal) {
         return board[arrVal / 10][arrVal % 10].getColor() + "" + board[arrVal / 10][arrVal % 10].getType();
     }
 
+    //you really don't want to know
     public static ArrayList<Integer> canMove (String curLine) {
         ArrayList<Integer> moveFrom = new ArrayList<Integer>();
         char piece = curLine.charAt(0);
+
+        //detect queenside castle
         if (curLine.substring(0, 5).equals("0-0-0")) {
             if ((curLine.charAt(6) == 'W'
             && !wKHasMoved)
@@ -173,6 +183,8 @@ class Main {
                 return moveFrom;
             }
         }
+
+        //detect kingside castle
         else if (curLine.substring(0, 3).equals("0-0")) {
             moveNum++;
             if ((curLine.charAt(4) == 'W'
@@ -245,14 +257,15 @@ class Main {
             String endPos = curLine.substring(2, 4);
             int endArr = posToArr(endPos);
             if (board[endArr / 10][endArr % 10].getColor() != curTurn) {
+                //pawn move case
                 if (piece == 'P') {
                     if (board[endArr / 10][endArr % 10].getColor() == 'E') {
                         if (endArr / 10 != 0 && curTurn == 'W') {
                             if (pawnTwoMoves != '\0') {
-                                System.out.println("Last move was pawn two moves");
-                                pawnTwoMoves = '\0';
+                                System.out.println("Last move was " + pawnTwoMoves + " pawn two moves");
                             }
-                            else if (board[endArr / 10 - 1][endArr % 10].getType() == 'P'
+
+                            if (board[endArr / 10 - 1][endArr % 10].getType() == 'P'
                             && board[endArr / 10 - 1][endArr % 10].getColor() == 'W') {
                                 moveFrom.add(endArr - 10);
                                 pawnTwoMoves = '\0';
@@ -268,10 +281,10 @@ class Main {
                         }
                         if (endArr / 10 != 7 && curTurn == 'B') {
                             if (pawnTwoMoves != '\0') {
-                                System.out.println("Last move was pawn two moves");
-                                pawnTwoMoves = '\0';
+                                System.out.println("Last move was " + pawnTwoMoves + " pawn two moves");
                             }
-                            else if (board[endArr / 10 + 1][endArr % 10].getType() == 'P'
+
+                            if (board[endArr / 10 + 1][endArr % 10].getType() == 'P'
                             && board[endArr / 10 + 1][endArr % 10].getColor() == 'B') {
                                 moveFrom.add(endArr + 10);
                                 pawnTwoMoves = '\0';
@@ -316,10 +329,10 @@ class Main {
                             }    
                         }
                     }
-                    System.out.println(pawnTwoMoves);
+//                    System.out.println(pawnTwoMoves);
                 }
 
-
+                //knight move case
                 else if (piece == 'N') {
                         if (((endArr / 10) + 1 < 8) && ((endArr % 10) + 2 < 8)) {
                             if (board[(endArr / 10) + 1][(endArr % 10) + 2].getType() == 'N' 
@@ -379,6 +392,7 @@ class Main {
                     
                 }
 
+                //bishop move case
                 else if (piece == 'B') {
                         for (int x = 1; (x < 8 - (endArr / 10)) && (x < 8 - (endArr % 10)); x++) {
                             if (board[(endArr / 10) + x][(endArr % 10) + x].getType() != 'E'
@@ -427,6 +441,7 @@ class Main {
                     
                 }
 
+                //rook move case
                 else if (piece == 'R') {
                         for (int x = (endArr % 10) + 1; x <= 7; x++) {
                             if (board[endArr / 10][x].getType() != 'E'
@@ -476,6 +491,7 @@ class Main {
                         }     
                 }
 
+                //queen move case
                 else if (piece == 'Q') {
                         for (int x = 1; (x < 8 - (endArr / 10)) && (x < 8 - (endArr % 10)); x++) {
                             if (board[(endArr / 10) + x][(endArr % 10) + x].getType() != 'E'
@@ -570,9 +586,11 @@ class Main {
                         }
                     
                 }
+
+                //king move case
                 else if (piece == 'K') {
-                    for (int x = -1; x < 2; x++) {
-                        for (int y = -1; y < 2; y++) {
+                    for (int x = -1; x <= 1; x++) {
+                        for (int y = -1; y <= 1; y++) {
                             if (((((endArr / 10) + x) > 7) || (((endArr / 10) + x) < 0))
                             || ((((endArr % 10) + x) > 7) || (((endArr % 10) + x) < 0))) {
                                 continue;
@@ -586,19 +604,26 @@ class Main {
                 }
             }
         }
+
+        //print all pieces that can move to the position and return the arraylist
         for (int canMoveFrom : moveFrom) {
             System.out.println(piece + " move from " + arrToPos(canMoveFrom));
         }
         return moveFrom; 
     }
 
+    //do the move
     public static void doMove (ArrayList<Integer> startArr, String curLine) {
         int s;
+
+        //no legal moves returned case
         if (startArr.size() == 0) {
             moveNum--;
             System.out.println("Illegal move was entered");
             return;
         }
+
+        //multiple legal moves returned case
         else if (startArr.size() == 2) {
             char modifier = curLine.charAt(7);
             if (modifier > 47 && modifier < 58) {
@@ -618,9 +643,13 @@ class Main {
                 }
             }
         }
+
+        //one legal move returned case
         else {
             s = startArr.get(0);
         }
+
+        //white queenside castles case
         if (s == 100) {
             board[0][6].setType('K');
             board[0][6].setColor('W');
@@ -636,7 +665,8 @@ class Main {
             board[0][4].setHeight('2');
             return;
         }
-
+  
+        //black queenside castles case
         else if (s == 200) {
             board[7][6].setType('K');
             board[7][6].setColor('B');
@@ -653,6 +683,7 @@ class Main {
             return;
         }
         
+        //white kingside castles case
         else if (s == 300) {
             board[0][2].setType('K');
             board[0][2].setColor('W');
@@ -669,6 +700,7 @@ class Main {
             return;
         }
 
+        //black kingside castles case
         else if (s == 400) {
             board[7][2].setType('K');
             board[7][2].setColor('B');
@@ -685,6 +717,7 @@ class Main {
             return;
         }
 
+        //set all pieces to new squares and store the original piece locations
         String endPos = curLine.substring(2, 4);
         int endArr = posToArr(endPos);
         char sType = board[s / 10][s % 10].getType();
@@ -699,7 +732,9 @@ class Main {
         board[s / 10][s % 10].setHeight(2);
         board[s / 10][s % 10].setColor('E');
         board[s / 10][s % 10].setType('E');
+        //check if the resulting position is legal
         if (legalPos()) {
+            //if the position is legal and a rook/king moved, then change the corresponding rook/king moves variable for castle detection
             if (sType == 'R') {
                 if (s == 0 || endArr == 0) {
                     wRAHasMoved = true;
@@ -728,6 +763,7 @@ class Main {
             return;
             
         }
+        //if the resulting position is not legal, then undo the previous moves
         else {
             board[s / 10][s % 10].setType(sType);
             board[s / 10][s % 10].setColor(sColor);
@@ -739,6 +775,8 @@ class Main {
             return;
         }
     }
+
+    //detect if current position is legal
     public static boolean legalPos () {
         String kPos = "";
         if (moveNum % 2 == 0) {
@@ -746,7 +784,7 @@ class Main {
                 for (int y = 0; y < 8; y++) {
                     if (board[x][y].getColor() == 'B' && board[x][y].getType() == 'K') {
                         kPos = arrToPos((x * 10) + y);
-                        System.out.println("K on " + kPos);
+//                        System.out.println("K on " + kPos);
                     }
                 }
             }
@@ -765,7 +803,7 @@ class Main {
                 for (int y = 0; y < 8; y++) {
                     if (board[x][y].getColor() == 'W' && board[x][y].getType() == 'K') {
                         kPos = arrToPos((x * 10) + y);
-                        System.out.println("K  on " + kPos);
+//                        System.out.println("K  on " + kPos);
                     }
                 }
             }
@@ -781,6 +819,8 @@ class Main {
         }
         return true;
     }
+
+    //parse the thing lol
     public static String notationParse (String curLine) {
         Matcher matcher;
         char piece = '\0';
@@ -788,7 +828,6 @@ class Main {
         char promTo = '\0';
         String endSq = "";
         
-//        String startSq = "";
         if (curLine.length() == 2) {
             Pattern pattern = Pattern.compile("[a-h][1-8]");
             matcher = pattern.matcher(curLine);

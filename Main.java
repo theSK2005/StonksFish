@@ -13,6 +13,7 @@ class Main {
     static boolean wRHHasMoved = false;
     static boolean bRHHasMoved = false;
     static char pawnTwoMoves = '\0';
+    static boolean isEnPassant = false;
     
     public static void main(String[] args) {
         board[0][0] = new Piece(2, 'W', 'R');
@@ -261,10 +262,27 @@ class Main {
                 if (piece == 'P') {
                     if (board[endArr / 10][endArr % 10].getColor() == 'E') {
                         if (endArr / 10 != 0 && curTurn == 'W') {
-                            if (pawnTwoMoves != '\0') {
-                                System.out.println("Last move was " + pawnTwoMoves + " pawn two moves");
+                            if (arrToPos(endArr).charAt(0) == pawnTwoMoves
+                                && arrToPos(endArr).charAt(1) == '6') {
+                                if (endArr % 10 != 0) {
+                                    if (board[(endArr / 10) - 1][(endArr % 10) - 1].getType() == 'P'
+                                    && board[(endArr / 10) - 1][(endArr % 10) - 1].getColor() == 'W') {
+                                        System.out.println("Can do en passant");
+                                        moveFrom.add(endArr - 11);
+                                        isEnPassant = true;
+                                    }
+                                }
+                                
+                                if (endArr % 10 != 7) {
+                                    if (board[(endArr / 10) - 1][(endArr % 10) + 1].getType() == 'P'
+                                    && board[(endArr / 10) - 1][(endArr % 10) + 1].getColor() == 'W') {
+                                        System.out.println("Can do en pessant");
+                                        moveFrom.add(endArr - 9);
+                                        isEnPassant = true;
+                                    }
+                                }
                             }
-
+                            
                             if (board[endArr / 10 - 1][endArr % 10].getType() == 'P'
                             && board[endArr / 10 - 1][endArr % 10].getColor() == 'W') {
                                 moveFrom.add(endArr - 10);
@@ -280,10 +298,26 @@ class Main {
                             }
                         }
                         if (endArr / 10 != 7 && curTurn == 'B') {
-                            if (pawnTwoMoves != '\0') {
-                                System.out.println("Last move was " + pawnTwoMoves + " pawn two moves");
+                            if (arrToPos(endArr).charAt(0) == pawnTwoMoves
+                                && arrToPos(endArr).charAt(1) == '3') {
+                                if (endArr % 10 != 0) {
+                                    if (board[(endArr / 10) + 1][(endArr % 10) - 1].getType() == 'P'
+                                    && board[(endArr / 10) + 1][(endArr % 10) - 1].getColor() == 'B') {
+                                        System.out.println("Can do en passant");
+                                        moveFrom.add(endArr + 9);
+                                        isEnPassant = true;
+                                    }
+                                }
+                                
+                                if (endArr % 10 != 7) {
+                                    if (board[(endArr / 10) + 1][(endArr % 10) + 1].getType() == 'P'
+                                    && board[(endArr / 10) + 1][(endArr % 10) + 1].getColor() == 'B') {
+                                        System.out.println("Can do en pessant");
+                                        moveFrom.add(endArr + 11);
+                                        isEnPassant = true;
+                                    }
+                                }
                             }
-
                             if (board[endArr / 10 + 1][endArr % 10].getType() == 'P'
                             && board[endArr / 10 + 1][endArr % 10].getColor() == 'B') {
                                 moveFrom.add(endArr + 10);
@@ -329,7 +363,7 @@ class Main {
                             }    
                         }
                     }
-//                    System.out.println(pawnTwoMoves);
+                    System.out.println(pawnTwoMoves);
                 }
 
                 //knight move case
@@ -732,6 +766,52 @@ class Main {
         board[s / 10][s % 10].setHeight(2);
         board[s / 10][s % 10].setColor('E');
         board[s / 10][s % 10].setType('E');
+        if (isEnPassant) {
+            if (arrToPos(endArr).charAt(1) == '6') {
+                char enType = board[4][endArr % 10].getType();
+                char enColor = board[4][endArr % 10].getColor();
+                int enHeight = board[4][endArr % 10].getHeight();
+                board[4][endArr % 10].setType('E');
+                board[4][endArr % 10].setColor('E');
+                board[4][endArr % 10].setHeight(2); 
+                if (legalPos()) {
+                    return;
+                }
+                board[s / 10][s % 10].setType(sType);
+                board[s / 10][s % 10].setColor(sColor);
+                board[s / 10][s % 10].setHeight(sHeight);
+                board[endArr / 10][endArr % 10].setType(eType);
+                board[endArr / 10][endArr % 10].setColor(eColor);
+                board[endArr / 10][endArr % 10].setHeight(eHeight);
+                board[4][endArr % 10].setType(enType);
+                board[4][endArr % 10].setColor(enColor);
+                board[4][endArr % 10].setHeight(enHeight);
+                moveNum--;
+                return;
+            }
+            else if (arrToPos(endArr).charAt(1) == '3') {
+                char enType = board[3][endArr % 10].getType();
+                char enColor = board[3][endArr % 10].getColor();
+                int enHeight = board[3][endArr % 10].getHeight();
+                board[3][endArr % 10].setType('E');
+                board[3][endArr % 10].setColor('E');
+                board[3][endArr % 10].setHeight(2); 
+                if (legalPos()) {
+                    return;
+                }
+                board[s / 10][s % 10].setType(sType);
+                board[s / 10][s % 10].setColor(sColor);
+                board[s / 10][s % 10].setHeight(sHeight);
+                board[endArr / 10][endArr % 10].setType(eType);
+                board[endArr / 10][endArr % 10].setColor(eColor);
+                board[endArr / 10][endArr % 10].setHeight(eHeight);
+                board[3][endArr % 10].setType(enType);
+                board[3][endArr % 10].setColor(enColor);
+                board[3][endArr % 10].setHeight(enHeight);
+                moveNum--;
+                return;
+            }
+        }
         //check if the resulting position is legal
         if (legalPos()) {
             //if the position is legal and a rook/king moved, then change the corresponding rook/king moves variable for castle detection

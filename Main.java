@@ -14,7 +14,6 @@ class Main {
     static boolean bRHHasMoved = false;
     static char pawnTwoMoves = '\0';
     static boolean isEnPassant = false;
-    
     public static void main(String[] args) {
         board[0][0] = new Piece(2, 'W', 'R');
         board[0][1] = new Piece(2, 'W', 'N');
@@ -649,7 +648,8 @@ class Main {
     //do the move
     public static void doMove (ArrayList<Integer> startArr, String curLine) {
         int s;
-
+        char promTo = '\0';
+        Matcher matcher;
         //no legal moves returned case
         if (startArr.size() == 0) {
             moveNum--;
@@ -751,6 +751,7 @@ class Main {
             return;
         }
 
+        
         //set all pieces to new squares and store the original piece locations
         String endPos = curLine.substring(2, 4);
         int endArr = posToArr(endPos);
@@ -760,12 +761,55 @@ class Main {
         char eType = board[endArr / 10][endArr % 10].getType();
         char eColor = board[endArr / 10][endArr % 10].getColor();
         int eHeight = board[endArr / 10][endArr % 10].getHeight();
-        board[endArr / 10][endArr % 10].setType(board[s / 10][s % 10].getType());
-        board[endArr / 10][endArr % 10].setColor(board[s / 10][s % 10].getColor());
-        board[endArr / 10][endArr % 10].setHeight(board[s / 10][s % 10].getHeight());  
+        
+        if (sType == 'P'
+            && ((s / 10 == 7 
+            && sColor == 'W')
+            || (s / 10 == 0
+            && sColor == 'B'))) {
+            Pattern pattern1 = Pattern.compile("[a-h][18]=[NBRQ]");
+            matcher = pattern1.matcher(curLine);
+            if (matcher.matches()) {
+                promTo = curLine.charAt(3);
+            }
+            Pattern pattern2 = Pattern.compile("[a-h][18]=[NBRQ][+#]");
+            matcher = pattern2.matcher(curLine);
+            if (matcher.matches()) {
+                promTo = curLine.charAt(3);
+            }
+            Pattern pattern3 = Pattern.compile("[a-h][a-h][18]=[NBRQ]");
+            matcher = pattern3.matcher(curLine);
+            if (matcher.matches()) {
+                promTo = curLine.charAt(4);
+            }
+            Pattern pattern4 = Pattern.compile("[a-h]x[a-h][18]=[NBRQ]");
+            matcher = pattern4.matcher(curLine);
+            if (matcher.matches()) {
+                promTo = curLine.charAt(5);
+            }
+            Pattern pattern5 = Pattern.compile("[a-h][a-h][18]=[NBRQ][+#]");
+            matcher = pattern5.matcher(curLine);
+            if (matcher.matches()) {
+                promTo = curLine.charAt(4);
+            }
+            Pattern pattern6 = Pattern.compile("[a-h]x[a-h][18]=[NBRQ][+#]");
+            matcher = pattern6.matcher(curLine);
+            if (matcher.matches()) {
+                promTo = curLine.charAt(5);
+            }
+            
+            board[endArr / 10][endArr % 10].setType(promTo);
+        }
+        else {
+            board[endArr / 10][endArr % 10].setType(sType);
+        }
+        board[endArr / 10][endArr % 10].setType(sType);
+        board[endArr / 10][endArr % 10].setColor(sColor);
+        board[endArr / 10][endArr % 10].setHeight(sHeight);  
         board[s / 10][s % 10].setHeight(2);
         board[s / 10][s % 10].setColor('E');
         board[s / 10][s % 10].setType('E');
+        
         if (isEnPassant) {
             if (arrToPos(endArr).charAt(1) == '6') {
                 char enType = board[4][endArr % 10].getType();

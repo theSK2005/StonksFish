@@ -761,49 +761,24 @@ class Main {
         char eType = board[endArr / 10][endArr % 10].getType();
         char eColor = board[endArr / 10][endArr % 10].getColor();
         int eHeight = board[endArr / 10][endArr % 10].getHeight();
-        
+        System.out.println(endArr + "\n" + curLine);
         if (sType == 'P'
-            && ((s / 10 == 7 
+            && ((endArr / 10 == 7 
             && sColor == 'W')
-            || (s / 10 == 0
+            || (endArr / 10 == 0
             && sColor == 'B'))) {
-            Pattern pattern1 = Pattern.compile("[a-h][18]=[NBRQ]");
-            matcher = pattern1.matcher(curLine);
-            if (matcher.matches()) {
-                promTo = curLine.charAt(3);
+
+            promTo = curLine.charAt(9);
+            if (promTo == '\0') {
+                System.out.println("Illegal Move Entered");
+                return;
             }
-            Pattern pattern2 = Pattern.compile("[a-h][18]=[NBRQ][+#]");
-            matcher = pattern2.matcher(curLine);
-            if (matcher.matches()) {
-                promTo = curLine.charAt(3);
-            }
-            Pattern pattern3 = Pattern.compile("[a-h][a-h][18]=[NBRQ]");
-            matcher = pattern3.matcher(curLine);
-            if (matcher.matches()) {
-                promTo = curLine.charAt(4);
-            }
-            Pattern pattern4 = Pattern.compile("[a-h]x[a-h][18]=[NBRQ]");
-            matcher = pattern4.matcher(curLine);
-            if (matcher.matches()) {
-                promTo = curLine.charAt(5);
-            }
-            Pattern pattern5 = Pattern.compile("[a-h][a-h][18]=[NBRQ][+#]");
-            matcher = pattern5.matcher(curLine);
-            if (matcher.matches()) {
-                promTo = curLine.charAt(4);
-            }
-            Pattern pattern6 = Pattern.compile("[a-h]x[a-h][18]=[NBRQ][+#]");
-            matcher = pattern6.matcher(curLine);
-            if (matcher.matches()) {
-                promTo = curLine.charAt(5);
-            }
-            
             board[endArr / 10][endArr % 10].setType(promTo);
         }
+            
         else {
             board[endArr / 10][endArr % 10].setType(sType);
         }
-        board[endArr / 10][endArr % 10].setType(sType);
         board[endArr / 10][endArr % 10].setColor(sColor);
         board[endArr / 10][endArr % 10].setHeight(sHeight);  
         board[s / 10][s % 10].setHeight(2);

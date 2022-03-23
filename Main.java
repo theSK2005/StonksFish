@@ -119,7 +119,6 @@ class Main {
         ArrayList<Integer> moveFrom = new ArrayList<Integer>();
         char piece = curLine.charAt(0);
 
-        System.out.println(curLine);
         if (curLine.equals("Invalid Notation")
             || curLine.equals("Move Undone")) {
             return moveFrom;    
@@ -394,7 +393,7 @@ class Main {
                         }
                         if (((endArr / 10) + 1 < 8) && ((endArr % 10) - 2 >= 0)) {
                             if (board[(endArr / 10) + 1][(endArr % 10) - 2].getType() == 'N' 
-                            && board[(endArr / 10) + 1][(endArr % 10) - 2].getType() == curTurn) {
+                            && board[(endArr / 10) + 1][(endArr % 10) - 2].getColor() == curTurn) {
                                 moveFrom.add(endArr + 8);
                             }
 
@@ -663,7 +662,7 @@ class Main {
         Matcher matcher;
         //no legal moves returned case
         if (startArr.size() == 0) {
-            System.out.println("Illegal move was entered");
+           moveNum--; System.out.println("Illegal move was entered");
             return;
         }
 
@@ -738,9 +737,9 @@ class Main {
             board[0][0].setType('E');
             board[0][0].setColor('E');
             board[0][0].setHeight('2');
-            board[0][5].setType('E');
-            board[0][5].setColor('E');
-            board[0][5].setHeight('2');
+            board[0][4].setType('E');
+            board[0][4].setColor('E');
+            board[0][4].setHeight('2');
             return;
         }
 
@@ -755,9 +754,9 @@ class Main {
             board[7][0].setType('E');
             board[7][0].setColor('E');
             board[7][0].setHeight('2');
-            board[7][5].setType('E');
-            board[7][5].setColor('E');
-            board[7][5].setHeight('2');
+            board[7][4].setType('E');
+            board[7][4].setColor('E');
+            board[7][4].setHeight('2');
             return;
         }
 
@@ -951,7 +950,6 @@ class Main {
                     board[i][j].setHeight(undoPos[i][j].getHeight());
                 }
             }
-            moveNum--;
             return "Move Undone";
         }
         else if (curLine.length() == 2) {
@@ -1158,6 +1156,7 @@ class Main {
             }
         }
         if (piece == '\0'){
+            moveNum++;
             return "Invalid Notation";
         }
         

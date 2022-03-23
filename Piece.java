@@ -8,6 +8,12 @@ class Piece {
         this.type = type;
     }
 
+    public Piece () {
+        this.height = '0';
+        this.color = 'E';
+        this.type = 'E';
+    }
+
     
     public static void main(String[] args) {
     }

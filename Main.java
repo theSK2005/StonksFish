@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 class Main {
     static Piece[][] board = new Piece [8][8];
+    static Piece[][] undoPos = new Piece[8][8];
     static int moveNum = 0;
     static boolean wKHasMoved = false;
     static boolean bKHasMoved = false;
@@ -52,6 +53,12 @@ class Main {
         board[6][5] = new Piece(2, 'B', 'P');
         board[6][6] = new Piece(2, 'B', 'P');
         board[6][7] = new Piece(2, 'B', 'P');
+        
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                undoPos[i][j] = new Piece();
+            }
+        }
         printBoard();
         String parsedLine;
         Scanner scan = new Scanner(System.in);
@@ -112,6 +119,11 @@ class Main {
         ArrayList<Integer> moveFrom = new ArrayList<Integer>();
         char piece = curLine.charAt(0);
 
+        System.out.println(curLine);
+        if (curLine.equals("Invalid Notation")
+            || curLine.equals("Move Undone")) {
+            return moveFrom;    
+        }
         //detect queenside castle
         if (curLine.substring(0, 5).equals("0-0-0")) {
             if ((curLine.charAt(6) == 'W'
@@ -362,7 +374,6 @@ class Main {
                             }    
                         }
                     }
-                    System.out.println(pawnTwoMoves);
                 }
 
                 //knight move case
@@ -652,7 +663,6 @@ class Main {
         Matcher matcher;
         //no legal moves returned case
         if (startArr.size() == 0) {
-            moveNum--;
             System.out.println("Illegal move was entered");
             return;
         }
@@ -751,7 +761,15 @@ class Main {
             return;
         }
 
-        
+        //set previous position to undo poition array
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                undoPos[i][j].setType(board[i][j].getType());
+                undoPos[i][j].setColor(board[i][j].getColor());
+                undoPos[i][j].setHeight(board[i][j].getHeight());
+            }
+        }
+         
         //set all pieces to new squares and store the original piece locations
         String endPos = curLine.substring(2, 4);
         int endArr = posToArr(endPos);
@@ -761,7 +779,6 @@ class Main {
         char eType = board[endArr / 10][endArr % 10].getType();
         char eColor = board[endArr / 10][endArr % 10].getColor();
         int eHeight = board[endArr / 10][endArr % 10].getHeight();
-        System.out.println(endArr + "\n" + curLine);
         if (sType == 'P'
             && ((endArr / 10 == 7 
             && sColor == 'W')
@@ -926,8 +943,18 @@ class Main {
         char modifier = '\0';
         char promTo = '\0';
         String endSq = "";
-        
-        if (curLine.length() == 2) {
+        if (curLine.equals("U")) {
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    board[i][j].setType(undoPos[i][j].getType());
+                    board[i][j].setColor(undoPos[i][j].getColor());
+                    board[i][j].setHeight(undoPos[i][j].getHeight());
+                }
+            }
+            moveNum--;
+            return "Move Undone";
+        }
+        else if (curLine.length() == 2) {
             Pattern pattern = Pattern.compile("[a-h][1-8]");
             matcher = pattern.matcher(curLine);
             if (matcher.matches()) {
@@ -1130,17 +1157,17 @@ class Main {
                 promTo = curLine.charAt(5);
             }
         }
-        if ((piece + endSq + modifier).length() == 0) {
+        if (piece == '\0'){
             return "Invalid Notation";
         }
         
         if (moveNum % 2 == 0) {
-            moveNum += 1;
+            moveNum++;
 //            System.out.println(piece + " " + endSq + " W");
             return piece + " " + endSq + " W " + modifier + " " + promTo;
         }
         else {
-            moveNum += 1;
+            moveNum++;
 //            System.out.println(piece + " " + endSq + " B");
             return piece + " " + endSq + " B " + modifier + " " + promTo;
         }

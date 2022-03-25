@@ -3,6 +3,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Arrays;
 class Main {
     static Piece[][] board = new Piece [8][8];
     static Piece[][] undoPos = new Piece[8][8];
@@ -15,6 +16,8 @@ class Main {
     static boolean bRHHasMoved = false;
     static char pawnTwoMoves = '\0';
     static boolean isEnPassant = false;
+    static ArrayList<StoreBoard> boardList = new ArrayList<StoreBoard>();
+    
     public static void main(String[] args) {
         board[0][0] = new Piece(2, 'W', 'R');
         board[0][1] = new Piece(2, 'W', 'N');
@@ -660,29 +663,54 @@ class Main {
         int s;
         char promTo = '\0';
         Matcher matcher;
+        char modifier = curLine.charAt(7);
         //no legal moves returned case
         if (startArr.size() == 0) {
-           moveNum--; System.out.println("Illegal move was entered");
+           moveNum--;
+            System.out.println("Illegal move was entered");
             return;
         }
 
         //multiple legal moves returned case
-        else if (startArr.size() == 2) {
-            char modifier = curLine.charAt(7);
+        else if (modifier != '\0') {
             if (modifier > 47 && modifier < 58) {
-                if (arrToPos(startArr.get(0)).charAt(1) == modifier) {
-                    s = startArr.get(0);
+                if (startArr.size() == 1) {
+                    if (arrToPos(startArr.get(0)).charAt(1) == modifier) {
+                        s = startArr.get(0);
+                    }
+                    else {
+                        moveNum--;
+                        System.out.println("Illegal move was entered");
+                        return;
+                    }
                 }
                 else {
-                    s = startArr.get(1);
+                    if (arrToPos(startArr.get(0)).charAt(1) == modifier) {
+                        s = startArr.get(0);
+                    }
+                    else {
+                        s = startArr.get(1);
+                    }
                 }
             }
             else {
-                if (arrToPos(startArr.get(0)).charAt(0) == modifier) {
-                    s = startArr.get(0);
+                if (startArr.size() == 1) {
+                    if (arrToPos(startArr.get(0)).charAt(0) == modifier) {
+                        s = startArr.get(0);
+                    }
+                    else {
+                        moveNum--;
+                        System.out.println("Illegal move was entered");
+                        return;
+                    }
                 }
                 else {
-                    s = startArr.get(1);
+                    if (arrToPos(startArr.get(0)).charAt(0) == modifier) {
+                        s = startArr.get(0);
+                    }
+                    else {
+                        s = startArr.get(1);
+                    }
                 }
             }
         }
@@ -875,6 +903,23 @@ class Main {
                     bKHasMoved = true;
                 }
             }
+
+ /*           StoreBoard curBoard = new StoreBoard(board, moveNum % 2 == 0);
+            int copyPos;
+            for (int i = 0; i < boardList.size(); i++) {
+                if (Arrays.equals(boardList.get(i).getBoard(), board)) {
+                    for (int j = 0; j < boardList.size(); j++) {
+                        if (i != j
+                            && Arrays.equals(boardList.get(j).getBoard(), board)) {
+                            System.out.println("Game is drawn\nThree Move Repetition");
+                            printBoard();
+                            System.exit(0);
+                        }
+                    }
+                }
+            }
+            boardList.add(curBoard);
+*/
             return;
             
         }
